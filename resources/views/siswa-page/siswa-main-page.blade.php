@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    @vite(['resources/js/ajax-siswa.js'])
 </head>
 <body class="bg-[#caf0f8] min-h-screen">
     <div class="w-full h-screen relative overflow-hidden">
@@ -45,7 +46,7 @@
 
           <!-- List button -->
         <div class="flex gap-[93px] mt-60 absolute left-1/2 transform -translate-x-1/2 w-[1200px] max-w-[1200px]">
-            <button class="flex flex-col items-center justify-center bg-[#90E0EF] text-white px-4 py-2 rounded-[20px] w-[323px] h-[240px] px-[89px] transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-lg">
+            <button id="dftButton" class="flex flex-col items-center justify-center bg-[#90E0EF] text-white px-4 py-2 rounded-[20px] w-[323px] h-[240px] px-[89px] transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-lg">
                 <img src="{{ asset('images/siswa-page/tdesign_book.svg') }}" alt="List Buku">
                 <div class = "font-[Roboto] font-bold text-2xl text-[#0077B6] mt-2">Daftar Buku</div>
             </button>
@@ -59,11 +60,17 @@
             </button>
         </div>
 
-        <!-- exit button -->
+        <!-- AJAX -->
+         <div id="siswa-content" class="mt-50 absolute left-1/2 transform -translate-x-1/2 w-[1200px] max-w-[1200px] opacity-0 transition-all duration-500 ease-in-out translate-y-4">
+
+         </div>
+
+        <!-- logout button -->
          <div class="absolute bottom-10 right-12">
             <button class="flex items-center justify-center bg-[#0077B6] text-white px-4 py-2 rounded-full w-16 h-16 hover:scale-110 hover:shadow-lg transition-transform duration-300 ease-in-out">
                 <img src="{{ asset('images/siswa-page/material-symbols_logout.svg') }}" alt="Exit" class="w-8 h-8">
             </button>
          </div>
+    </div>
 </body>
 </html>
