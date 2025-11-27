@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 contentDiv.innerHTML = data;
                 
-                // Trigger animasi fade in
                 setTimeout(() => {
                     contentDiv.classList.remove('opacity-0', 'translate-y-4');
                     contentDiv.classList.add('opacity-100', 'translate-y-0');
@@ -33,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Fungsi global untuk menutup konten dengan animasi
     window.closeContent = function() {
         contentDiv.classList.remove('opacity-100', 'translate-y-0');
         contentDiv.classList.add('opacity-0', 'translate-y-4');
