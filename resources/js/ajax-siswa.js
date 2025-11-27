@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const contentDiv = document.getElementById('siswa-content');
 
     dftButton.addEventListener('click', () => {
-        // Fade out terlebih dahulu jika ada konten
         if (contentDiv.innerHTML.trim() !== '') {
             contentDiv.classList.remove('opacity-100', 'translate-y-0');
             contentDiv.classList.add('opacity-0', 'translate-y-4');
