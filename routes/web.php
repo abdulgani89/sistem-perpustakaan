@@ -19,3 +19,7 @@ Route::get('/siswa', [SiswaController::class, 'index']);
 Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('daftar-buku');
 
 Route::get('/siswa/riwayat-peminjaman', [SiswaController::class, 'riwayatPeminjaman'])->name('riwayat-peminjaman');
+
+Route::get('/siswa/buku-dipinjam', [SiswaController::class, 'bukuDipinjam'])->name('buku-dipinjam');
+
+Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index']);

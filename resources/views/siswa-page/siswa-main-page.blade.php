@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    
+
 </head>
 <body class="bg-[#caf0f8] min-h-screen">
     <div class="w-full h-screen relative overflow-hidden">
@@ -54,7 +54,7 @@
                 <img src="{{ asset('images/siswa-page/solar_history-line-duotone.svg') }}" alt="History">
                 <span class = "font-[Roboto] font-bold text-2xl text-[#0077B6] mt-2">Riwayat Peminjaman</span>
             </button>
-            <button class="flex flex-col items-center justify-center bg-[#90E0EF] text-white px-4 py-2 rounded-[20px] w-[323px] h-[240px] px-[89px] transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-lg active:scale-90 duration-200">
+            <button id="bkDipinjamButton" class="flex flex-col items-center justify-center bg-[#90E0EF] text-white px-4 py-2 rounded-[20px] w-[323px] h-[240px] px-[89px] transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-lg active:scale-90 duration-200">
                 <img src="{{ asset('images/siswa-page/tabler_refresh.svg') }}" alt="Peminjaman">
                 <span class = "font-[Roboto] font-bold text-2xl text-[#0077B6] mt-2">Buku Dipinjam</span>
             </button>

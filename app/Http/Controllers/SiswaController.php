@@ -33,4 +33,13 @@ class SiswaController extends Controller
 
         return view('siswa-page.content-riwayat-peminjaman', ['riwayat' => $riwayat]);
     }
+
+    public function bukuDipinjam()
+    {
+        $pinjam = [
+            ['title' => 'Buku M', 'author' => 'Author M', 'borrowed_on' => '2024-04-01', 'due_date' => '2024-04-15'],
+            ['title' => 'Buku N', 'author' => 'Author N', 'borrowed_on' => '2024-04-05', 'due_date' => '2026-04-20'],
+        ];
+        return view('siswa-page.content-buku-dipinjam', ['pinjam' => $pinjam]);
+    }
 }
