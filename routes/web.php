@@ -17,3 +17,5 @@ use App\Http\Controllers\SiswaController;
 Route::get('/siswa', [SiswaController::class, 'index']);
 
 Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('daftar-buku');
+
+Route::get('/siswa/riwayat-peminjaman', [SiswaController::class, 'riwayatPeminjaman'])->name('riwayat-peminjaman');
