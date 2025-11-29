@@ -135,13 +135,13 @@
 
                     <!-- Input ID Kepala -->
                     <div class="input-card mb-4">
-                        <img src="https://placehold.co/61x61">
+                        <img src="{{ asset('images/login/head-teacher.png') }}">
                         <input type="text" name="id_kepala" placeholder="Masukkan ID Kepala">
                     </div>
 
                     <!-- Input Password -->
                     <div class="input-card mb-5">
-                        <img src="https://placehold.co/61x61">
+                        <img src="{{ asset('images/login/padlock.png') }}">
                         <input type="password" name="password" placeholder="Masukkan Password">
                     </div>
 
