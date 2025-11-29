@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sistem Perpustakaan - Siswa</title>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/ajax-siswa.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +30,8 @@
                 </div>
                 
                 <!-- Search Input -->
-                <input 
+                <input
+                    id="searchInput"
                     type="text" 
                     placeholder="Cari Buku" 
                     class="flex-1 h-full px-5 text-[#49454f] text-base font-normal font-['Roboto'] tracking-[0.5px] bg-transparent border-none outline-none focus:outline-none"
@@ -60,14 +62,14 @@
             </button>
         </div>
 
-        <!-- AJAX -->
-         <div id="siswa-content" class="mt-50 absolute left-1/2 transform -translate-x-1/2 w-[1200px] max-w-[1200px] opacity-0 transition-all duration-500 ease-in-out translate-y-4">
+        <!-- AJAX Content Container -->
+         <div id="siswa-content" class="mt-[160px] absolute left-1/2 transform -translate-x-1/2 w-[1200px] max-w-[1200px] opacity-0 transition-all duration-500 ease-in-out translate-y-4 z-20">
 
          </div>
 
         <!-- logout button -->
          <div class="absolute bottom-10 right-12">
-            <button class="flex items-center justify-center bg-[#0077B6] text-white px-4 py-2 rounded-full w-16 h-16 hover:scale-110 hover:shadow-lg transition-transform duration-300 ease-in-out">
+            <button onclick= "window.location.href='{{ route('logout') }}'" class="flex items-center justify-center bg-[#0077B6] text-white px-4 py-2 rounded-full w-16 h-16 hover:scale-110 hover:shadow-lg transition-transform duration-300 ease-in-out">
                 <img src="{{ asset('images/siswa-page/material-symbols_logout.svg') }}" alt="Exit" class="w-8 h-8">
             </button>
          </div>

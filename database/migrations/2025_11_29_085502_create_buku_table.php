@@ -14,14 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::create('buku', function (Blueprint $table) {
-            $table->unsignedInteger('id_buku'); // primary key INT AUTO_INCREMENT
-            $table->string('kode_buku', 225);
+            $table->increments('id_buku'); // primary key INT AUTO_INCREMENT
+            $table->string('kode_buku', 225)->nullable();
             $table->string('judul_buku', 225);
             $table->string('pengarang', 225);
             $table->string('penerbit', 45);
-            $table->dateTime('tahun_terbit'); // DATETIME
+            $table->year('tahun_terbit')->nullable(); // YEAR type lebih cocok
             $table->string('kategori', 225);
-            $table->integer('stok');
+            $table->integer('stok')->default(1);
+            $table->string('status', 50)->default('tersedia'); // untuk seeder
+            $table->string('cover')->nullable(); // untuk cover buku
             $table->timestamps();
         });
     }

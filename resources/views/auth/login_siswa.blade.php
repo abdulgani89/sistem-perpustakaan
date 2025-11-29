@@ -124,23 +124,27 @@
                 </h1>
 
                 <p class="mb-4" style="font-size:28px; opacity:0.7;">
-                    Masukkan NISN dan Password
+                    Masukkan Username dan Password
                 </p>
+
+                @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
 
                 <!-- FORM LOGIN -->
                 <form action="{{ route('auth.siswa') }}" method="POST">
                     @csrf
 
-                    <!-- Input NISN -->
+                    <!-- Input Username -->
                     <div class="input-card mb-4">
                         <img src="{{ asset('images/login/student.png') }}">
-                        <input type="text" name="nis" placeholder="Masukkan NISN">
+                        <input type="text" name="username" placeholder="Masukkan Username" required>
                     </div>
 
                     <!-- Input Password -->
                     <div class="input-card mb-5">
                         <img src="{{ asset('images/login/padlock.png') }}">
-                        <input type="password" name="password" placeholder="Masukkan Password">
+                        <input type="password" name="password" placeholder="Masukkan Password" required>
                     </div>
 
                     <button class="btn-login d-block mx-auto">Login</button>

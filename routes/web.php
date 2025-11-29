@@ -46,12 +46,13 @@ Route::get('/admin/aktivitas', [AdminController::class, 'aktivitas'])->name('adm
 Route::get('/kepala/dashboard', [KepalaController::class, 'index'])->name('kepala.dashboard');
 
 // SISWA DASHBOARD
-Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
-Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('daftar-buku');
-
-Route::get('/siswa/riwayat-peminjaman', [SiswaController::class, 'riwayatPeminjaman'])->name('riwayat-peminjaman');
-
-Route::get('/siswa/buku-dipinjam', [SiswaController::class, 'bukuDipinjam'])->name('buku-dipinjam');
-
+Route::middleware(['checkSiswaAuth'])->group(function () {
+    Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
+    Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('daftar-buku');
+    Route::get('/siswa/riwayat-peminjaman', [SiswaController::class, 'riwayatPeminjaman'])->name('riwayat-peminjaman');
+    Route::get('/siswa/buku-dipinjam', [SiswaController::class, 'bukuDipinjam'])->name('buku-dipinjam');
+    Route::get('/siswa/search-book', [SiswaController::class, 'searchBook'])->name('search-book');
+    Route::post('/siswa/pinjam-buku', [SiswaController::class, 'pinjamBuku'])->name('siswa.pinjamBuku');
+});
 // LOGOUT
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
