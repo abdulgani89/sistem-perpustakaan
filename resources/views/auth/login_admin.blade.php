@@ -134,13 +134,13 @@
 
                     <!-- Username -->
                     <div class="input-card mb-4">
-                        <img src="https://placehold.co/61x61">
+                        <img src="{{ asset('images/login/administrator.png') }}">
                         <input type="text" name="username" placeholder="Masukkan Username Admin">
                     </div>
 
                     <!-- Password -->
                     <div class="input-card mb-5">
-                        <img src="https://placehold.co/61x61">
+                        <img src="{{ asset('images/login/padlock.png') }}">
                         <input type="password" name="password" placeholder="Masukkan Password">
                     </div>
 

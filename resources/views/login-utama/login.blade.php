@@ -96,7 +96,7 @@
                 <!-- Siswa -->
                 <a href="{{ route('auth.siswa') }}" class="text-decoration-none text-dark">
                     <div class="login-card d-flex align-items-center mb-4">
-                        <img src="https://placehold.co/61x61" class="me-4">
+                            <img src="{{ asset('images/login/student.png') }}" class="me-4">
                         <span class="login-text">Siswa</span>
                     </div>
                 </a>
@@ -104,7 +104,7 @@
                 <!-- Kepala Perpustakaan -->
                 <a href="{{ route('login.kepala') }}" class="text-decoration-none text-dark">
                     <div class="login-card d-flex align-items-center mb-4">
-                        <img src="https://placehold.co/61x61" class="me-4" style="transform:rotate(180deg);">
+                        <img src="{{ asset('images/login/head-teacher.png') }}" class="me-4" >
                         <span class="login-text">Kepala Perpustakaan</span>
                     </div>
                 </a>
@@ -112,7 +112,7 @@
                 <!-- Admin -->
                 <a href="{{ route('login.admin') }}" class="text-decoration-none text-dark">
                     <div class="login-card d-flex align-items-center mb-4">
-                        <img src="https://placehold.co/61x61" class="me-4">
+                        <img src="{{ asset('images/login/administrator.png') }}" class="me-4">
                         <span class="login-text">Admin</span>
                     </div>
                 </a>

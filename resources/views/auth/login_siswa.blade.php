@@ -133,13 +133,13 @@
 
                     <!-- Input NISN -->
                     <div class="input-card mb-4">
-                        <img src="https://placehold.co/61x61">
+                        <img src="{{ asset('images/login/student.png') }}">
                         <input type="text" name="nis" placeholder="Masukkan NISN">
                     </div>
 
                     <!-- Input Password -->
                     <div class="input-card mb-5">
-                        <img src="https://placehold.co/61x61">
+                        <img src="{{ asset('images/login/padlock.png') }}">
                         <input type="password" name="password" placeholder="Masukkan Password">
                     </div>
 
