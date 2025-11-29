@@ -1,26 +1,57 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\KepalaController;
 use App\Http\Controllers\SiswaController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| LOGIN PAGE
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
-Route::get('/siswa', [SiswaController::class, 'index']);
+Route::get('/', [AuthController::class, 'loginUtama'])->name('login.utama');
 
+
+
+// LOGIN ADMIN
+Route::get('/login/admin', [AuthController::class, 'loginAdmin'])->name('login.admin');
+Route::post('/login/admin', [AuthController::class, 'authAdmin']);
+
+// LOGIN KEPALA
+Route::get('/login/kepala', [AuthController::class, 'loginKepala'])->name('login.kepala');
+Route::post('/login/kepala', [AuthController::class, 'authKepala']);
+
+// LOGIN SISWA
+Route::get('/login/siswa', [AuthController::class, 'loginSiswa'])->name('siswa.login');
+Route::post('/login/siswa', [AuthController::class, 'authSiswa'])->name('auth.siswa');
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD PAGE
+|--------------------------------------------------------------------------
+*/
+
+// ADMIN DASHBOARD
+Route::get('/admin', [AdminController::class, 'index']);
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
+Route::get('/admin/buku', [AdminController::class, 'buku'])->name('admin.buku');
+Route::get('/admin/siswa', [AdminController::class, 'siswa'])->name('admin.siswa');
+Route::get('/admin/transaksi', [AdminController::class, 'transaksi'])->name('admin.transaksi');
+Route::get('/admin/aktivitas', [AdminController::class, 'aktivitas'])->name('admin.aktivitas');
+
+// KEPALA DASHBOARD
+Route::get('/kepala/dashboard', [KepalaController::class, 'index'])->name('kepala.dashboard');
+
+// SISWA DASHBOARD
+Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
 Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('daftar-buku');
 
 Route::get('/siswa/riwayat-peminjaman', [SiswaController::class, 'riwayatPeminjaman'])->name('riwayat-peminjaman');
 
 Route::get('/siswa/buku-dipinjam', [SiswaController::class, 'bukuDipinjam'])->name('buku-dipinjam');
 
-Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index']);
-Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin-dashboard');
+// LOGOUT
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
