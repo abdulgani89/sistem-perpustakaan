@@ -23,3 +23,4 @@ Route::get('/siswa/riwayat-peminjaman', [SiswaController::class, 'riwayatPeminja
 Route::get('/siswa/buku-dipinjam', [SiswaController::class, 'bukuDipinjam'])->name('buku-dipinjam');
 
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index']);
+Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin-dashboard');

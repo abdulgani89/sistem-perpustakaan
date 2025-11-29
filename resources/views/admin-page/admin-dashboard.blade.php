@@ -56,7 +56,7 @@
         <!-- content -->
          <div class ="ml-[305px] pt-6 pb-6 pr-6 pl-6">
             <div id="admin-content" class="opacity-0 transition-all duration-500 ease-in-out translate-y-4">
-                <!-- Dynamic content will be loaded here -->
+                <!-- Dynamic content here -->
             </div>
 
          </div>
