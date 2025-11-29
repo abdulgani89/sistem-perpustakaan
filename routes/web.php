@@ -35,7 +35,7 @@ Route::post('/login/siswa', [AuthController::class, 'authSiswa'])->name('auth.si
 */
 
 // ADMIN DASHBOARD
-Route::get('/admin', [AdminController::class, 'index']);
+Route::get('/admin', [AdminController::class, 'index']) -> name('index-admin');
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
 Route::get('/admin/buku', [AdminController::class, 'buku'])->name('admin.buku');
 Route::get('/admin/siswa', [AdminController::class, 'siswa'])->name('admin.siswa');

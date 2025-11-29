@@ -32,7 +32,7 @@ class AuthController extends Controller
     {
         if ($req->username == "admin" && $req->password == "admin123") {
             Session::put('role', 'admin');
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('index-admin');
         }
         return back()->with('error', 'Username atau password admin salah');
     }
@@ -50,7 +50,7 @@ class AuthController extends Controller
     {
         if ($req->nis == "12345" && $req->password == "siswa123") {
             Session::put('role', 'siswa');
-            return redirect()->route('siswa.dashboard');
+            return redirect()->route('siswa.index');
         }
         return back()->with('error', 'NIS atau password salah');
     }
