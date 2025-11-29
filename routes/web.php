@@ -14,6 +14,8 @@ use App\Http\Controllers\SiswaController;
 
 Route::get('/', [AuthController::class, 'loginUtama'])->name('login.utama');
 
+
+
 // LOGIN ADMIN
 Route::get('/login/admin', [AuthController::class, 'loginAdmin'])->name('login.admin');
 Route::post('/login/admin', [AuthController::class, 'authAdmin']);
@@ -33,14 +35,23 @@ Route::post('/login/siswa', [AuthController::class, 'authSiswa'])->name('auth.si
 */
 
 // ADMIN DASHBOARD
-Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+Route::get('/admin', [AdminController::class, 'index']) -> name('index-admin');
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
+Route::get('/admin/buku', [AdminController::class, 'buku'])->name('admin.buku');
+Route::get('/admin/siswa', [AdminController::class, 'siswa'])->name('admin.siswa');
+Route::get('/admin/transaksi', [AdminController::class, 'transaksi'])->name('admin.transaksi');
+Route::get('/admin/aktivitas', [AdminController::class, 'aktivitas'])->name('admin.aktivitas');
 
 // KEPALA DASHBOARD
 Route::get('/kepala/dashboard', [KepalaController::class, 'index'])->name('kepala.dashboard');
 
 // SISWA DASHBOARD
-Route::get('/siswa/home', [SiswaController::class, 'index'])->name('siswa.home');
-Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('siswa.buku');
+Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
+Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('daftar-buku');
+
+Route::get('/siswa/riwayat-peminjaman', [SiswaController::class, 'riwayatPeminjaman'])->name('riwayat-peminjaman');
+
+Route::get('/siswa/buku-dipinjam', [SiswaController::class, 'bukuDipinjam'])->name('buku-dipinjam');
 
 // LOGOUT
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
