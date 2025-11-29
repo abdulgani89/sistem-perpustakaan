@@ -1,19 +1,46 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\KepalaController;
 use App\Http\Controllers\SiswaController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| LOGIN PAGE
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
-Route::get('/siswa', [SiswaController::class, 'index']);
+Route::get('/', [AuthController::class, 'loginUtama'])->name('login.utama');
 
-Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('daftar-buku');
+// LOGIN ADMIN
+Route::get('/login/admin', [AuthController::class, 'loginAdmin'])->name('login.admin');
+Route::post('/login/admin', [AuthController::class, 'authAdmin']);
+
+// LOGIN KEPALA
+Route::get('/login/kepala', [AuthController::class, 'loginKepala'])->name('login.kepala');
+Route::post('/login/kepala', [AuthController::class, 'authKepala']);
+
+// LOGIN SISWA
+Route::get('/login/siswa', [AuthController::class, 'loginSiswa'])->name('siswa.login');
+Route::post('/login/siswa', [AuthController::class, 'authSiswa'])->name('auth.siswa');
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD PAGE
+|--------------------------------------------------------------------------
+*/
+
+// ADMIN DASHBOARD
+Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
+// KEPALA DASHBOARD
+Route::get('/kepala/dashboard', [KepalaController::class, 'index'])->name('kepala.dashboard');
+
+// SISWA DASHBOARD
+Route::get('/siswa/home', [SiswaController::class, 'index'])->name('siswa.home');
+Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('siswa.buku');
+
+// LOGOUT
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
