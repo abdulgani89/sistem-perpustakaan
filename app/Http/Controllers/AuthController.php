@@ -30,7 +30,6 @@ class AuthController extends Controller
         return view('auth.login_siswa');
     }
 
-    // ---- PROSES LOGIN ----
     public function authAdmin(Request $req)
     {
         $req->validate([

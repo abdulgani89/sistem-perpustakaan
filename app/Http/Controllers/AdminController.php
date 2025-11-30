@@ -152,14 +152,12 @@ class AdminController extends Controller
             'password' => 'required|string|min:6',
         ]);
         
-        // Buat user dulu
         $user = User::create([
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
             'role' => 'siswa'
         ]);
         
-        // Buat siswa dengan id_user
         Siswa::create([
             'nis' => $validated['nis'],
             'nama_siswa' => $validated['nama_siswa'],
@@ -196,7 +194,6 @@ class AdminController extends Controller
             'password' => 'nullable|string|min:6',
         ]);
         
-        // Update data siswa
         $siswa->update([
             'nis' => $validated['nis'],
             'nama_siswa' => $validated['nama_siswa'],
@@ -204,7 +201,6 @@ class AdminController extends Controller
             'alamat' => $validated['alamat'],
         ]);
         
-        // Update password jika diisi
         if (!empty($validated['password'])) {
             $siswa->user->update([
                 'password' => Hash::make($validated['password'])
@@ -221,7 +217,6 @@ class AdminController extends Controller
             return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
         }
         
-        // Hapus user juga (cascade akan handle siswa)
         $siswa->user->delete();
         
         return response()->json(['message' => 'Siswa berhasil dihapus!'], 200);
@@ -237,7 +232,6 @@ class AdminController extends Controller
         $totalDipinjam = Peminjaman::whereNull('tanggal_kembali')->count();
         $pengembalianHariIni = Pengembalian::whereDate('tanggal_pengembalian', Carbon::today())->count();
         
-        // Hitung yang terlambat (lebih dari 7 hari)
         $totalTerlambat = Peminjaman::whereNull('tanggal_kembali')
                                     ->where('tanggal_pinjam', '<', Carbon::now()->subDays(7))
                                     ->count();
@@ -264,13 +258,11 @@ class AdminController extends Controller
             return response()->json(['message' => 'Buku sudah dikembalikan'], 400);
         }
         
-        // Update tanggal kembali di peminjaman
         $peminjaman->update([
             'tanggal_kembali' => $validated['tanggal_pengembalian'],
             'status' => 'dikembalikan'
         ]);
         
-        // Buat record pengembalian
         $idPengembalian = 'PGB-' . time() . '-' . rand(1000, 9999);
         Pengembalian::create([
             'id_pengembalian' => $idPengembalian,
@@ -279,7 +271,6 @@ class AdminController extends Controller
             'denda' => $validated['denda'] ?? '0',
         ]);
         
-        // Update status buku menjadi tersedia
         $peminjaman->buku->update([
             'status' => 'tersedia'
         ]);

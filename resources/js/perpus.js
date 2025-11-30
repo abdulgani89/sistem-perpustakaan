@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const contentDiv = document.getElementById('admin-content');
     
-    // Load dashboard default dan set sebagai active
     loadContent('/admin/dashboard');
     setActiveButton('dashButton');
 
@@ -32,14 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setActiveButton(buttonId) {
-    // Remove active state dari semua tombol
     const allButtons = document.querySelectorAll('nav button');
     allButtons.forEach(btn => {
         btn.classList.remove('bg-[#CAF0F8]');
         btn.classList.add('bg-[#90E0EF]', 'group');
     });
     
-    // Add active state ke tombol yang diklik
     const activeButton = document.getElementById(buttonId);
     if (activeButton) {
         activeButton.classList.remove('bg-[#90E0EF]', 'group');
@@ -92,7 +89,6 @@ function fetchContent(url, contentDiv) {
 
 // Setup event listeners untuk konten dinamis
 function setupDynamicEventListeners() {
-    // Modal Tambah Buku
     const btnTambahBuku = document.getElementById('btnTambahBuku');
     const modalTambahBuku = document.getElementById('modalTambahBuku');
     const modalContent = document.getElementById('modalContent');
@@ -103,7 +99,6 @@ function setupDynamicEventListeners() {
     if (btnTambahBuku) {
         btnTambahBuku.addEventListener('click', () => {
             modalTambahBuku.style.display = 'flex';
-            // Trigger animasi setelah modal muncul
             setTimeout(() => {
                 modalContent.style.transform = 'scale(1)';
                 modalContent.style.opacity = '1';
@@ -129,7 +124,6 @@ function setupDynamicEventListeners() {
         btnCancelTambah.addEventListener('click', closeModal);
     }
     
-    // Close modal ketika klik di luar modal content
     if (modalTambahBuku) {
         modalTambahBuku.addEventListener('click', (e) => {
             if (e.target === modalTambahBuku) {
@@ -142,33 +136,27 @@ function setupDynamicEventListeners() {
         formTambahBuku.addEventListener('submit', handleSubmitTambahBuku);
     }
     
-    // Event delegation untuk tombol Edit dan Hapus
     document.addEventListener('click', (e) => {
-        // Tombol Edit Buku
         if (e.target.classList.contains('btnEditBuku')) {
             const bookId = e.target.getAttribute('data-id');
             openEditModal(bookId);
         }
         
-        // Tombol Hapus Buku
         if (e.target.classList.contains('btnHapusBuku')) {
             const bookId = e.target.getAttribute('data-id');
             deleteBuku(bookId);
         }
         
-        // Tombol Edit Siswa
         if (e.target.classList.contains('btnEditSiswa')) {
             const siswaId = e.target.getAttribute('data-id');
             openEditSiswaModal(siswaId);
         }
         
-        // Tombol Hapus Siswa
         if (e.target.classList.contains('btnHapusSiswa')) {
             const siswaId = e.target.getAttribute('data-id');
             deleteSiswa(siswaId);
         }
         
-        // Tombol Proses Pengembalian
         if (e.target.classList.contains('btnProsesPengembalian')) {
             const idPeminjaman = e.target.getAttribute('data-id');
             const namaSiswa = e.target.getAttribute('data-siswa');
@@ -179,7 +167,6 @@ function setupDynamicEventListeners() {
         }
     });
     
-    // Modal Edit Buku
     const modalEditBuku = document.getElementById('modalEditBuku');
     const modalEditContent = document.getElementById('modalEditContent');
     const closeModalEdit = document.getElementById('closeModalEdit');
@@ -218,9 +205,6 @@ function setupDynamicEventListeners() {
         formEditBuku.addEventListener('submit', handleSubmitEditBuku);
     }
     
-    // ========== SISWA MODALS ==========
-    
-    // Modal Tambah Siswa
     const btnTambahSiswa = document.getElementById('btnTambahSiswa');
     const modalTambahSiswa = document.getElementById('modalTambahSiswa');
     const modalSiswaContent = document.getElementById('modalSiswaContent');
@@ -270,7 +254,6 @@ function setupDynamicEventListeners() {
         formTambahSiswa.addEventListener('submit', handleSubmitTambahSiswa);
     }
     
-    // Modal Edit Siswa
     const modalEditSiswa = document.getElementById('modalEditSiswa');
     const modalEditSiswaContent = document.getElementById('modalEditSiswaContent');
     const closeModalEditSiswa = document.getElementById('closeModalEditSiswa');
@@ -309,23 +292,19 @@ function setupDynamicEventListeners() {
         formEditSiswa.addEventListener('submit', handleSubmitEditSiswa);
     }
     
-    // Setup transaksi event listeners
     setupTransaksiEventListeners();
 }
 
-// Handle submit form tambah buku
 function handleSubmitTambahBuku(e) {
     e.preventDefault();
     
     const formData = new FormData(e.target);
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     
-    // Disable button submit
     const btnSubmit = document.getElementById('btnSubmitTambah');
     btnSubmit.disabled = true;
     btnSubmit.textContent = 'Menyimpan...';
     
-    // Clear previous errors
     clearErrors();
     
     fetch('/admin/buku/store', {
@@ -339,7 +318,6 @@ function handleSubmitTambahBuku(e) {
     .then(response => response.json())
     .then(data => {
         if (data.errors) {
-            // Tampilkan validation errors
             Object.keys(data.errors).forEach(key => {
                 const errorSpan = document.getElementById(`error_${key}`);
                 if (errorSpan) {
@@ -347,10 +325,8 @@ function handleSubmitTambahBuku(e) {
                 }
             });
         } else {
-            // Success
             alert(data.message || 'Buku berhasil ditambahkan!');
             
-            // Tutup modal dengan animasi
             const modalContent = document.getElementById('modalContent');
             modalContent.style.transform = 'scale(0.95)';
             modalContent.style.opacity = '0';
@@ -359,7 +335,6 @@ function handleSubmitTambahBuku(e) {
                 document.getElementById('modalTambahBuku').style.display = 'none';
                 document.getElementById('formTambahBuku').reset();
                 
-                // Reload content buku
                 loadContent('/admin/buku');
             }, 300);
         }
@@ -374,7 +349,6 @@ function handleSubmitTambahBuku(e) {
     });
 }
 
-// Clear error messages
 function clearErrors() {
     const errorSpans = document.querySelectorAll('[id^="error_"]');
     errorSpans.forEach(span => {
@@ -389,7 +363,6 @@ function clearEditErrors() {
     });
 }
 
-// Open edit modal dan load data buku
 function openEditModal(bookId) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     
@@ -483,12 +456,12 @@ function handleSubmitEditBuku(e) {
     });
 }
 
-// Delete buku
+
 function deleteBuku(bookId) {
     const confirmed = confirm('Apakah Anda yakin ingin menghapus buku ini?');
     
     if (!confirmed) {
-        return; // Batalkan jika user pilih cancel
+        return; 
     }
     
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -511,7 +484,6 @@ function deleteBuku(bookId) {
     });
 }
 
-// ========== SISWA FUNCTIONS ==========
 
 function clearSiswaErrors() {
     const errorSpans = document.querySelectorAll('[id^="error_"]');
@@ -527,7 +499,7 @@ function clearEditSiswaErrors() {
     });
 }
 
-// Handle submit tambah siswa
+
 function handleSubmitTambahSiswa(e) {
     e.preventDefault();
     
@@ -581,7 +553,6 @@ function handleSubmitTambahSiswa(e) {
     });
 }
 
-// Open edit siswa modal
 function openEditSiswaModal(siswaId) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     
@@ -616,7 +587,7 @@ function openEditSiswaModal(siswaId) {
     });
 }
 
-// Handle submit edit siswa
+
 function handleSubmitEditSiswa(e) {
     e.preventDefault();
     
@@ -671,7 +642,7 @@ function handleSubmitEditSiswa(e) {
     });
 }
 
-// Delete siswa
+
 function deleteSiswa(siswaId) {
     const confirmed = confirm('Apakah Anda yakin ingin menghapus siswa ini? Data user juga akan terhapus.');
     
@@ -699,7 +670,6 @@ function deleteSiswa(siswaId) {
     });
 }
 
-// ========== TRANSAKSI PENGEMBALIAN FUNCTIONS ==========
 
 function setupTransaksiEventListeners() {
     // Filter buttons
@@ -782,12 +752,12 @@ function openPengembalianModal(idPeminjaman, namaSiswa, judulBuku, terlambat, ha
     document.getElementById('info_siswa').textContent = namaSiswa;
     document.getElementById('info_buku').textContent = judulBuku;
     
-    // Set tanggal pengembalian ke sekarang
+
     const now = new Date();
     const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
     document.getElementById('tanggal_pengembalian').value = localDateTime;
     
-    // Handle denda jika terlambat
+
     const dendaContainer = document.getElementById('dendaContainer');
     if (terlambat === '1') {
         dendaContainer.style.display = 'block';
@@ -803,7 +773,7 @@ function openPengembalianModal(idPeminjaman, namaSiswa, judulBuku, terlambat, ha
         document.getElementById('denda').value = 0;
     }
     
-    // Show modal
+
     const modalPengembalian = document.getElementById('modalPengembalian');
     const modalPengembalianContent = document.getElementById('modalPengembalianContent');
     modalPengembalian.style.display = 'flex';
