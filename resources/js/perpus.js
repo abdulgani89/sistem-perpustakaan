@@ -81,7 +81,7 @@ function fetchContent(url, contentDiv) {
         })
         .catch(error => {
             console.error('Error fetching content:', error);
-            contentDiv.innerHTML = '<div class="bg-red-100 text-red-700 p-4 rounded-lg">Terjadi kesalahan saat memuat konten.</div>';
+            contentDiv.innerHTML = '<div class="bg-red-100 text-red-700 p-4 rounded-lg">Terjadi kesalahan saat memuat konten: ' + error.message + '</div>';
             contentDiv.classList.remove('opacity-0', 'translate-y-4');
             contentDiv.classList.add('opacity-100', 'translate-y-0');
         });

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Perpustakaan - Siswa</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Sistem Perpustakaan - Admin</title>
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/perpus.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,11 +12,20 @@
 
 </head>
 <body class="bg-[#CAF0F8] min-h-screen">
-    <div class = "w-full h-screen relative overflow-hidden">
+    <div class="w-full min-h-screen relative flex">
         <!-- sidebar --> 
-        <div class="h-[94px] w-[305px] bg-[#03045E] backdrop-blur-md px-6 py-4 absolute left-0 top-0 flex flex-col items-center"></div>
-        <div class="h-full w-[305px] bg-[#90E0EF] mt-[94px] pt-[23px] pl-2">
-            <nav class="flex flex-col gap-2">
+        <div class="fixed left-0 top-0 w-[305px] h-screen bg-[#90E0EF] z-10">
+            <div class="h-[94px] w-full bg-[#03045E] backdrop-blur-md px-6 py-4 flex items-center justify-center">
+                <div class="flex items-center space-x-3">
+                    <img src="{{ asset('images/siswa-page/iconoir_profile-circle.svg') }}" alt="Admin Avatar" class="w-12 h-12 rounded-full border-2 border-white">
+                    <div class="text-white text-xl font-bold">
+                        {{ session('username') ?? 'Admin' }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-[23px] pl-2 pr-2">
+                <nav class="flex flex-col gap-2">
                 <button type="button" id="dashButton" class="group flex items-center justify-between h-[60px] pl-2 pr-2 bg-[#CAF0F8] border-l-4 border-[#03045E] text-[#03045E] font-[Roboto] font-bold text-xl " >
                     <div class="flex items-center gap-4">
                         <img src="{{ asset('images/perpus-page/dashboard-perpus.svg') }}" alt="Dashboard Icon" class="group-hover:scale-110 group-hover:rotate-10 transition ease-in-out duration-300 inline-block w-10 h-10">
@@ -52,13 +62,13 @@
                     <img src="{{ asset('images/perpus-page/arrow.svg') }}" alt="" class="inline-block w-6 h-15 ml-20 group-hover:translate-x-1 transition ease-in-out duration-300">
                 </button>
             </nav>
-        </div>
-        <!-- content -->
-         <div class ="ml-[305px] pt-6 pb-6 pr-6 pl-6">
-            <div id="admin-content" class="opacity-0 transition-all duration-500 ease-in-out translate-y-4">
-                <!-- Dynamic content here -->
             </div>
-
-         </div>
+        </div>
+        
+        <!-- content -->
+        <div class="flex-1 ml-[305px] p-6">
+            
+            <div id="admin-content" class="transition-all duration-500 ease-in-out"></div>
+        </div>
     </div>
 </body>

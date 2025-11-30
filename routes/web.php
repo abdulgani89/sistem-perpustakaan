@@ -35,12 +35,14 @@ Route::post('/login/siswa', [AuthController::class, 'authSiswa'])->name('auth.si
 */
 
 // ADMIN DASHBOARD
-Route::get('/admin', [AdminController::class, 'index']) -> name('index-admin');
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
-Route::get('/admin/buku', [AdminController::class, 'buku'])->name('admin.buku');
-Route::get('/admin/siswa', [AdminController::class, 'siswa'])->name('admin.siswa');
-Route::get('/admin/transaksi', [AdminController::class, 'transaksi'])->name('admin.transaksi');
-Route::get('/admin/aktivitas', [AdminController::class, 'aktivitas'])->name('admin.aktivitas');
+Route::middleware(['checkAdminAuth'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('index-admin');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
+    Route::get('/admin/buku', [AdminController::class, 'buku'])->name('admin.buku');
+    Route::get('/admin/siswa', [AdminController::class, 'siswa'])->name('admin.siswa');
+    Route::get('/admin/transaksi', [AdminController::class, 'transaksi'])->name('admin.transaksi');
+    Route::get('/admin/aktivitas', [AdminController::class, 'aktivitas'])->name('admin.aktivitas');
+});
 
 // KEPALA DASHBOARD
 Route::get('/kepala/dashboard', [KepalaController::class, 'index'])->name('kepala.dashboard');

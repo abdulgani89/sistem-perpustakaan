@@ -33,11 +33,26 @@ class AuthController extends Controller
     // ---- PROSES LOGIN ----
     public function authAdmin(Request $req)
     {
-        if ($req->username == "admin" && $req->password == "admin123") {
-            Session::put('role', 'admin');
-            return redirect()->route('index-admin');
+        $req->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('username', $req->username)
+                    ->where('role', 'admin')
+                    ->first();
+
+        if (!$user || !Hash::check($req->password, $user->password)) {
+            return back()->with('error', 'Username atau password admin salah');
         }
-        return back()->with('error', 'Username atau password admin salah');
+
+        session([
+            'id_user' => $user->id_user,
+            'username' => $user->username,
+            'role' => 'admin',
+        ]);
+
+        return redirect()->route('index-admin');
     }
 
     public function authKepala(Request $req)
