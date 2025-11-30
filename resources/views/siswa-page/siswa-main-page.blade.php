@@ -14,9 +14,11 @@
 <body class="bg-[#caf0f8] min-h-screen">
     <div class="w-full h-screen relative overflow-hidden">
         <!-- User Badge -->
-         <div class = "h-[77px] w-[180px] top-4 left-4 bg-[#90E0EF] backdrop-blur-md rounded-[20px] px-4 py-2 flex items-center space-x-3 mt-5 ml-5">
+         <div class = "h-[77px] w-[300px] top-4 left-4 bg-[#90E0EF] backdrop-blur-md rounded-[20px] px-4 py-2 flex items-center space-x-3 mt-5 ml-5">
             <img src="{{ asset('images/siswa-page/iconoir_profile-circle.svg') }}" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-white">
-            <div class="w-24 h-7 justify-start text-sky-600 text-2xl font-bold font-['Roboto']">Siswa</div>
+            <div class="w-auto px-3 h-7 justify-start text-sky-600 text-xl font-bold">
+                {{ session('nama_siswa') ?? 'Siswa' }}
+            </div>
          </div>
          
          <!-- Search bar -->
@@ -73,6 +75,41 @@
                 <img src="{{ asset('images/siswa-page/material-symbols_logout.svg') }}" alt="Exit" class="w-8 h-8">
             </button>
          </div>
+    </div>
+
+    <!-- Modal Konfirmasi Pinjam -->
+    <div id="modalPinjam" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-[20px] p-6 w-[500px] shadow-2xl transform transition-all">
+            <h3 class="text-2xl font-bold text-[#0077B6] mb-4">Konfirmasi Peminjaman</h3>
+            
+            <!-- Info Buku -->
+            <div class="mb-4 p-4 bg-[#CAF0F8] rounded-lg">
+                <p class="text-gray-700"><span class="font-semibold">Judul:</span> <span id="modalJudulBuku"></span></p>
+                <p class="text-gray-600 text-sm"><span class="font-semibold">Pengarang:</span> <span id="modalPengarang"></span></p>
+            </div>
+            
+            <!-- Input Durasi Peminjaman -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">Durasi Peminjaman (hari):</label>
+                <input type="number" 
+                    id="durasiPeminjaman" 
+                    value="7" 
+                    min="1" 
+                    max="14" 
+                    class="w-full px-4 py-2 border-2 border-[#00B4D8] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0077B6]">
+                <p class="text-sm text-gray-500 mt-1">Maksimal 14 hari</p>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="flex gap-3">
+                <button onclick="batalPinjam()" class="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-400 transition">
+                    Batal
+                </button>
+                <button onclick="konfirmasiPinjam()" class="flex-1 bg-[#0077B6] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#023E8A] transition">
+                    Konfirmasi Pinjam
+                </button>
+            </div>
+        </div>
     </div>
 </body>
 </html>

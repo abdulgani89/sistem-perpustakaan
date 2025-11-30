@@ -31,7 +31,7 @@
                 
                 <div class="flex justify-between items-center pt-3 border-t border-white/30">
                     <span class="text-green-700 text-sm font-bold bg-green-100 px-3 py-1 rounded-full">✓ Tersedia</span>
-                    <button onclick="pinjamBuku({{ $book->id_buku }})" class="bg-[#0077B6] text-white px-4 py-2 rounded-lg hover:bg-[#023E8A] transition-colors font-semibold shadow-md">
+                    <button onclick="pinjamBuku({{ $book->id_buku }}, '{{ addslashes($book->judul_buku) }}', '{{ addslashes($book->pengarang) }}')" class="bg-[#0077B6] text-white px-4 py-2 rounded-lg hover:bg-[#023E8A] transition-colors font-semibold shadow-md">
                         Pinjam
                     </button>
                 </div>

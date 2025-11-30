@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const contentDiv = document.getElementById('siswa-content');
     const dftPinjamanButton = document.getElementById('dftPinjamanButton');
     const bkDipinjamButton = document.getElementById('bkDipinjamButton');
+    let bukuTerpilih = null;
 
     
     dftButton.addEventListener('click', () => {
@@ -138,9 +139,29 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    window.pinjamBuku = function(idBuku){
-        if(!confirm('Apakah Anda yakin ingin meminjam buku ini?')){
-            return;
+    window.pinjamBuku = function(idBuku, judulBuku, pengarang){
+        bukuTerpilih = { id_buku: idBuku}
+
+        document.getElementById('modalJudulBuku').innerText = judulBuku;
+        document.getElementById('modalPengarang').innerText = pengarang;
+
+        document.getElementById('durasiPeminjaman').value = 7;
+        document.getElementById('modalPinjam').classList.remove('hidden');
+    };
+
+    window.batalPinjam = function(){
+        document.getElementById('modalPinjam').classList.add('hidden');
+        bukuTerpilih = null;
+    };
+
+    window.konfirmasiPinjam = function(){
+        if (!bukuTerpilih) return;
+
+        const durasi = document.getElementById('durasiPeminjaman').value;
+
+        if (durasi < 1 || durasi > 14) {
+            alert('Durasi peminjaman harus antara 1 hingga 14 hari.');
+            return; 
         }
 
         fetch('/siswa/pinjam-buku', {
@@ -149,20 +170,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
-            body: JSON.stringify({ id_buku: idBuku })
+            body: JSON.stringify({
+                id_buku: bukuTerpilih.id_buku,
+                durasi: durasi
+            })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('✓ ' + data.message + '\nID Peminjaman: ' + data.data.id_peminjaman);
-                closeContent();
+                alert('Buku berhasil dipinjam!');
+                window.location.reload();
             } else {
-                alert('✗ ' + data.message);
+                alert('Gagal meminjam buku: ' + data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
             alert('Terjadi kesalahan saat meminjam buku.');
         });
-    };
+    }
+    
 });

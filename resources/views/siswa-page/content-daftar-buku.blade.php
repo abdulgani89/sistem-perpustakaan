@@ -8,7 +8,7 @@
                 <h3 class="text-[#0077B6] text-xl font-bold font-['Roboto']">{{ $book['judul_buku'] }}</h3>
                 <p class="text-[#49454f] text-sm font-['Roboto']">Penulis: {{ $book['pengarang'] }}</p>
             </div>
-            <button onClick="pinjamBuku('{{ $book['id_buku'] }}')" class="bg-[#0077B6] text-white px-6 py-2 rounded-lg hover:bg-[#005a8c] transition-colors font-['Roboto'] font-bold">
+            <button onclick="pinjamBuku({{ $book->id_buku }}, '{{ addslashes($book->judul_buku) }}', '{{ addslashes($book->pengarang) }}')" class="bg-[#0077B6] text-white px-6 py-2 rounded-lg hover:bg-[#005a8c] transition-colors font-['Roboto'] font-bold">
                 Pinjam
             </button>
         </div>

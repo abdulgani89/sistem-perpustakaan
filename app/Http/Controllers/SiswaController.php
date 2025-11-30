@@ -24,6 +24,7 @@ class SiswaController extends Controller
     public function riwayatPeminjaman()
     {
         $riwayat = Peminjaman::with(['buku', 'siswa'])
+                            ->where('id_siswa', session('id_siswa'))
                             ->where('status', 'dikembalikan') 
                             ->orderBy('tanggal_kembali', 'desc') 
                             ->get();
@@ -34,6 +35,7 @@ class SiswaController extends Controller
     public function bukuDipinjam()
     {
         $pinjam = Peminjaman::with(['buku', 'siswa'])
+                           ->where('id_siswa', session('id_siswa'))
                            ->where('status', 'dipinjam')
                            ->orderBy('tanggal_pinjam', 'desc')
                            ->get();
@@ -60,6 +62,7 @@ class SiswaController extends Controller
     {
         $request->validate([
             'id_buku' => 'required|exists:buku,id_buku',
+            'durasi' => 'required|integer|min:1|max:14',
         ]);
 
         $buku = Buku::find($request->id_buku);
@@ -82,9 +85,12 @@ class SiswaController extends Controller
         $idPeminjaman ="PJM-{$tanggal}-{$newNumber}";
         $idSiswa = session('id_siswa');
 
+        $tanggalKembali = now()->addDays($request->durasi);
+
         Peminjaman::create([
             'id_peminjaman' => $idPeminjaman,
             'tanggal_pinjam' => now(),
+            'tanggal_kembali' => $tanggalKembali,
             'status' => 'dipinjam',
             'id_siswa' => $idSiswa,
             'id_buku' => $request->id_buku,
