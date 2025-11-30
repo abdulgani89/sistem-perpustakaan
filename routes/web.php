@@ -38,13 +38,23 @@ Route::post('/login/siswa', [AuthController::class, 'authSiswa'])->name('auth.si
 Route::middleware(['checkAdminAuth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('index-admin');
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
+    
+    // Buku routes
     Route::get('/admin/buku', [AdminController::class, 'buku'])->name('admin.buku');
     Route::post('/admin/buku/store', [AdminController::class, 'storeBuku'])->name('admin.buku.store');
     Route::get('/admin/buku/{id}', [AdminController::class, 'getBuku'])->name('admin.buku.get');
     Route::post('/admin/buku/{id}', [AdminController::class, 'updateBuku'])->name('admin.buku.update');
     Route::delete('/admin/buku/{id}', [AdminController::class, 'deleteBuku'])->name('admin.buku.delete');
+    
+    // Siswa routes
     Route::get('/admin/siswa', [AdminController::class, 'siswa'])->name('admin.siswa');
+    Route::post('/admin/siswa/store', [AdminController::class, 'storeSiswa'])->name('admin.siswa.store');
+    Route::get('/admin/siswa/{id}', [AdminController::class, 'getSiswa'])->name('admin.siswa.get');
+    Route::post('/admin/siswa/{id}', [AdminController::class, 'updateSiswa'])->name('admin.siswa.update');
+    Route::delete('/admin/siswa/{id}', [AdminController::class, 'deleteSiswa'])->name('admin.siswa.delete');
+    
     Route::get('/admin/transaksi', [AdminController::class, 'transaksi'])->name('admin.transaksi');
+    Route::post('/admin/transaksi/pengembalian', [AdminController::class, 'prosesPengembalian'])->name('admin.prosesPengembalian');
     Route::get('/admin/aktivitas', [AdminController::class, 'aktivitas'])->name('admin.aktivitas');
 });
 

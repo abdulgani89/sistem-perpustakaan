@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
+use App\Models\Pengembalian;
 use App\Models\Buku;
+use App\Models\Siswa;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -129,12 +133,158 @@ class AdminController extends Controller
 
     public function siswa()
     {
-        return view('admin-page.content-siswa');
+        $students = Siswa::with('user')->orderBy('nama_siswa', 'asc')->get();
+        $totalSiswa = Siswa::count();
+        $siswaAktif = Peminjaman::whereNull('tanggal_kembali')->distinct('id_siswa')->count('id_siswa');
+        $totalKelas = Siswa::distinct('kelas')->count('kelas');
+        
+        return view('admin-page.content-siswa-admin', compact('students', 'totalSiswa', 'siswaAktif', 'totalKelas'));
+    }
+    
+    public function storeSiswa(Request $request)
+    {
+        $validated = $request->validate([
+            'nis' => 'required|integer|unique:siswa,nis',
+            'nama_siswa' => 'required|string|max:225',
+            'kelas' => 'required|string|max:45',
+            'alamat' => 'required|string|max:225',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:6',
+        ]);
+        
+        // Buat user dulu
+        $user = User::create([
+            'username' => $validated['username'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'siswa'
+        ]);
+        
+        // Buat siswa dengan id_user
+        Siswa::create([
+            'nis' => $validated['nis'],
+            'nama_siswa' => $validated['nama_siswa'],
+            'kelas' => $validated['kelas'],
+            'alamat' => $validated['alamat'],
+            'id_user' => $user->id_user
+        ]);
+        
+        return response()->json(['message' => 'Siswa berhasil ditambahkan!'], 201);
+    }
+    
+    public function getSiswa($id)
+    {
+        $siswa = Siswa::with('user')->find($id);
+        if (!$siswa) {
+            return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
+        }
+        
+        return response()->json($siswa, 200);
+    }
+    
+    public function updateSiswa(Request $request, $id)
+    {
+        $siswa = Siswa::find($id);
+        if (!$siswa) {
+            return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
+        }
+        
+        $validated = $request->validate([
+            'nis' => 'required|integer|unique:siswa,nis,' . $id . ',id_siswa',
+            'nama_siswa' => 'required|string|max:225',
+            'kelas' => 'required|string|max:45',
+            'alamat' => 'required|string|max:225',
+            'password' => 'nullable|string|min:6',
+        ]);
+        
+        // Update data siswa
+        $siswa->update([
+            'nis' => $validated['nis'],
+            'nama_siswa' => $validated['nama_siswa'],
+            'kelas' => $validated['kelas'],
+            'alamat' => $validated['alamat'],
+        ]);
+        
+        // Update password jika diisi
+        if (!empty($validated['password'])) {
+            $siswa->user->update([
+                'password' => Hash::make($validated['password'])
+            ]);
+        }
+        
+        return response()->json(['message' => 'Siswa berhasil diupdate!'], 200);
+    }
+    
+    public function deleteSiswa($id)
+    {
+        $siswa = Siswa::find($id);
+        if (!$siswa) {
+            return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
+        }
+        
+        // Hapus user juga (cascade akan handle siswa)
+        $siswa->user->delete();
+        
+        return response()->json(['message' => 'Siswa berhasil dihapus!'], 200);
     }
 
     public function transaksi()
     {
-        return view('admin-page.content-transaksi');
+        $peminjaman = Peminjaman::with(['siswa', 'buku'])
+                                ->whereNull('tanggal_kembali')
+                                ->orderBy('tanggal_pinjam', 'desc')
+                                ->get();
+        
+        $totalDipinjam = Peminjaman::whereNull('tanggal_kembali')->count();
+        $pengembalianHariIni = Pengembalian::whereDate('tanggal_pengembalian', Carbon::today())->count();
+        
+        // Hitung yang terlambat (lebih dari 7 hari)
+        $totalTerlambat = Peminjaman::whereNull('tanggal_kembali')
+                                    ->where('tanggal_pinjam', '<', Carbon::now()->subDays(7))
+                                    ->count();
+        
+        return view('admin-page.content-transaksi-admin', compact('peminjaman', 'totalDipinjam', 'pengembalianHariIni', 'totalTerlambat'));
+    }
+    
+    public function prosesPengembalian(Request $request)
+    {
+        $validated = $request->validate([
+            'id_peminjaman' => 'required|string|exists:peminjaman,id_peminjaman',
+            'tanggal_pengembalian' => 'required|date',
+            'denda' => 'nullable|numeric|min:0',
+            'catatan' => 'nullable|string',
+        ]);
+        
+        $peminjaman = Peminjaman::find($validated['id_peminjaman']);
+        
+        if (!$peminjaman) {
+            return response()->json(['message' => 'Peminjaman tidak ditemukan'], 404);
+        }
+        
+        if ($peminjaman->tanggal_kembali) {
+            return response()->json(['message' => 'Buku sudah dikembalikan'], 400);
+        }
+        
+        // Update tanggal kembali di peminjaman
+        $peminjaman->update([
+            'tanggal_kembali' => $validated['tanggal_pengembalian'],
+            'status' => 'dikembalikan'
+        ]);
+        
+        // Buat record pengembalian
+        $idPengembalian = 'PGB-' . time() . '-' . rand(1000, 9999);
+        Pengembalian::create([
+            'id_pengembalian' => $idPengembalian,
+            'id_peminjaman' => $validated['id_peminjaman'],
+            'tanggal_pengembalian' => $validated['tanggal_pengembalian'],
+            'denda' => $validated['denda'] ?? '0',
+        ]);
+        
+        // Update status buku menjadi tersedia
+        $peminjaman->buku->update([
+            'status' => 'tersedia'
+        ]);
+        
+        return response()->json(['message' => 'Pengembalian berhasil diproses!'], 200);
     }
 
     public function aktivitas()
