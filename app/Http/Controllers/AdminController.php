@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
+use App\Models\Buku;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
@@ -58,7 +59,72 @@ class AdminController extends Controller
 
     public function buku()
     {
-        return view('admin-page.content-buku');
+        $books = Buku::orderBy('tahun_terbit', 'desc')->get();
+        $totalBuku = Buku::count();
+        $bukuTersedia = Buku::where('status', 'tersedia')->count();
+        $bukuDipinjam = Buku::where('status', 'dipinjam')->count();
+        
+        return view('admin-page.content-buku-admin', compact('books', 'totalBuku', 'bukuTersedia', 'bukuDipinjam'));
+    }
+
+    public function storeBuku(Request $request)
+    {
+        $validated = $request->validate([
+            'kode_buku' => 'nullable|string|max:225',
+            'judul_buku' => 'required|string|max:225',
+            'pengarang' => 'required|string|max:225',
+            'penerbit' => 'required|string|max:45',
+            'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'kategori' => 'required|string|max:225',
+            'stok' => 'required|integer|min:1',
+            'status' => 'required|in:tersedia,dipinjam',
+        ]);
+
+        Buku::create($validated);
+        return response()->json(['message' => 'Buku berhasil ditambahkan!'], 201);
+    }
+
+    public function deleteBuku($id)
+    {
+        $buku = Buku::find($id);
+        if (!$buku) {
+            return response()->json(['message' => 'Buku tidak ditemukan.'], 404);
+        }
+
+        $buku->delete();
+        return response()->json(['message' => 'Buku berhasil dihapus.'], 200);
+    }
+
+    public function getBuku($id)
+    {
+        $buku = Buku::find($id);
+        if (!$buku) {
+            return response()->json(['message' => 'Buku tidak ditemukan.'], 404);
+        }
+
+        return response()->json($buku, 200);
+    }
+    
+    public function updateBuku(Request $request, $id)
+    {
+        $buku = Buku::find($id);
+        if (!$buku) {
+            return response()->json(['message' => 'Buku tidak ditemukan.'], 404);
+        }
+        
+        $validated = $request->validate([
+            'kode_buku' => 'nullable|string|max:225',
+            'judul_buku' => 'required|string|max:225',
+            'pengarang' => 'required|string|max:225',
+            'penerbit' => 'required|string|max:45',
+            'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'kategori' => 'required|string|max:225',
+            'stok' => 'required|integer|min:1',
+            'status' => 'required|in:tersedia,dipinjam',
+        ]);
+        
+        $buku->update($validated);
+        return response()->json(['message' => 'Buku berhasil diupdate!'], 200);
     }
 
     public function siswa()

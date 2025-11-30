@@ -39,6 +39,10 @@ Route::middleware(['checkAdminAuth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('index-admin');
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
     Route::get('/admin/buku', [AdminController::class, 'buku'])->name('admin.buku');
+    Route::post('/admin/buku/store', [AdminController::class, 'storeBuku'])->name('admin.buku.store');
+    Route::get('/admin/buku/{id}', [AdminController::class, 'getBuku'])->name('admin.buku.get');
+    Route::post('/admin/buku/{id}', [AdminController::class, 'updateBuku'])->name('admin.buku.update');
+    Route::delete('/admin/buku/{id}', [AdminController::class, 'deleteBuku'])->name('admin.buku.delete');
     Route::get('/admin/siswa', [AdminController::class, 'siswa'])->name('admin.siswa');
     Route::get('/admin/transaksi', [AdminController::class, 'transaksi'])->name('admin.transaksi');
     Route::get('/admin/aktivitas', [AdminController::class, 'aktivitas'])->name('admin.aktivitas');

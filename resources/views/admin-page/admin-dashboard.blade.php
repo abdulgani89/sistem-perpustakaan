@@ -24,9 +24,9 @@
                 </div>
             </div>
             
-            <div class="pt-[23px] pl-2 pr-2">
+            <div class="pt-[23px] pl-2">
                 <nav class="flex flex-col gap-2">
-                <button type="button" id="dashButton" class="group flex items-center justify-between h-[60px] pl-2 pr-2 bg-[#CAF0F8] border-l-4 border-[#03045E] text-[#03045E] font-[Roboto] font-bold text-xl " >
+                <button type="button" id="dashButton" class="group flex items-center justify-between h-[60px] pl-2 pr-2 top bg-[#CAF0F8] border-l-4 border-[#03045E] text-[#03045E] font-[Roboto] font-bold text-xl " >
                     <div class="flex items-center gap-4">
                         <img src="{{ asset('images/perpus-page/dashboard-perpus.svg') }}" alt="Dashboard Icon" class="group-hover:scale-110 group-hover:rotate-10 transition ease-in-out duration-300 inline-block w-10 h-10">
                         <span class="group-hover:scale-110 transition ease-in-out duration-300">Dashboard</span>
