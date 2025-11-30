@@ -147,29 +147,37 @@
             <!-- Kiri: Form Login -->
             <div class="col-12 col-lg-5 left-container">
                 <h1>Login Siswa</h1>
-                <p>Masukkan NISN dan Password</p>
+                <p>Masukkan Username dan Password</p>
 
+                @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
+
+                <!-- FORM LOGIN -->
                 <form action="{{ route('auth.siswa') }}" method="POST">
                     @csrf
 
+                    <!-- Input Username -->
                     <div class="input-card">
-                        <img src="{{ asset('images/login/student.png') }}" alt="Siswa">
-                        <input type="text" name="nis" placeholder="Masukkan NISN">
+                        <img src="{{ asset('images/login/student.png') }}" alt="Student">
+                        <input type="text" name="username" placeholder="Masukkan Username" required>
                     </div>
 
+                    <!-- Input Password -->
                     <div class="input-card">
                         <img src="{{ asset('images/login/padlock.png') }}" alt="Password">
-                        <input type="password" name="password" placeholder="Masukkan Password">
+                        <input type="password" name="password" placeholder="Masukkan Password" required>
                     </div>
 
-                    <button class="btn-login d-block mx-auto">Login</button>
+                    <button type="submit" class="btn-login d-block mx-auto">Login</button>
                 </form>
             </div>
 
             <!-- Kanan: Gambar Full + Overlay -->
             <div class="col-12 col-lg-7 image-side d-none d-lg-block">
                 <img src="https://plus.unsplash.com/premium_photo-1677567996070-68fa4181775a?q=80&w=2072&auto=format&fit=crop" alt="Background">
-                
+                <div class="bg-overlay"></div>
+            </div>
         </div>
     </div>
 

@@ -21,6 +21,8 @@ class Buku extends Model
         'penerbit',
         'tahun_terbit',
         'kategori',
-        'stok'
+        'stok',
+        'status',
+        'cover'
     ];
 }

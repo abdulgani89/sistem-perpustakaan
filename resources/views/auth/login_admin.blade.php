@@ -128,6 +128,13 @@
                     Masukkan Username dan Password Admin
                 </p>
 
+                <!-- Error Message -->
+                @if(session('error'))
+                    <div class="alert alert-danger" role="alert">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <!-- FORM LOGIN ADMIN -->
                 <form action="{{ route('login.admin') }}" method="POST">
                     @csrf

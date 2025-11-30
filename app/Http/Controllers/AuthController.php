@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Models\User;
+use App\Models\Siswa;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -27,14 +30,28 @@ class AuthController extends Controller
         return view('auth.login_siswa');
     }
 
-    // ---- PROSES LOGIN ----
     public function authAdmin(Request $req)
     {
-        if ($req->username == "admin" && $req->password == "admin123") {
-            Session::put('role', 'admin');
-            return redirect()->route('index-admin');
+        $req->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('username', $req->username)
+                    ->where('role', 'admin')
+                    ->first();
+
+        if (!$user || !Hash::check($req->password, $user->password)) {
+            return back()->with('error', 'Username atau password admin salah');
         }
-        return back()->with('error', 'Username atau password admin salah');
+
+        session([
+            'id_user' => $user->id_user,
+            'username' => $user->username,
+            'role' => 'admin',
+        ]);
+
+        return redirect()->route('index-admin');
     }
 
     public function authKepala(Request $req)
@@ -48,11 +65,30 @@ class AuthController extends Controller
 
     public function authSiswa(Request $req)
     {
-        if ($req->nis == "12345" && $req->password == "siswa123") {
-            Session::put('role', 'siswa');
-            return redirect()->route('siswa.index');
+        $req->validate([
+            'username' => 'required',
+            'password' => 'required', 
+        ]);
+
+        $user = User::where('username', $req->username)
+                    ->where('role', 'siswa')
+                    ->first();
+
+        if (!$user || !Hash::check($req->password, $user->password)) {
+            return back()->with('error', 'Username atau password siswa salah');
         }
-        return back()->with('error', 'NIS atau password salah');
+
+        $siswa = Siswa::where('id_user', $user->id_user)->first();
+
+        session([
+            'id_user' => $user->id_user,
+            'id_siswa' => $siswa->id_siswa,
+            'username' => $user->username,
+            'nama_siswa' => $siswa->nama_siswa,
+            'role' => 'siswa',
+        ]);
+
+        return redirect()->route('siswa.index');
     }
 
     public function logout()

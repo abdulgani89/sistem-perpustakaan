@@ -4,7 +4,7 @@ import laravel from 'laravel-vite-plugin';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/ajax-siswa.js', 'resources/js/perpus.js'],
+            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/ajax-siswa.js', 'resources/js/perpus.js', 'resources/js/chart-admin-dashboard.js'],
             refresh: true,
         }),
     ],

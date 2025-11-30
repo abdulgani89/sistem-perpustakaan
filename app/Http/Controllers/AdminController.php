@@ -3,44 +3,279 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Peminjaman;
+use App\Models\Pengembalian;
+use App\Models\Buku;
+use App\Models\Siswa;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
     public function index()
     {
-        if (Session::get('role') !== 'admin') {
-            return redirect()->route('login.admin');
-        }
-
         return view('admin-page.admin-dashboard');
     }
 
     public function dashboard()
     {
-        $peminjaman = [
-            ['id_peminjaman' => '001', 'buku_id_buku' => 'B001', 'siswa_id_siswa' => 'S001', 'tanggal_pinjaman' => '2024-04-10', 'tanggal_kembali' => '2024-04-20'],
-            ['id_peminjaman' => '002', 'buku_id_buku' => 'B002', 'siswa_id_siswa' => 'S002', 'tanggal_pinjaman' => '2024-04-11', 'tanggal_kembali' => '2024-04-21'],
-            ['id_peminjaman' => '003', 'buku_id_buku' => 'B003', 'siswa_id_siswa' => 'S003', 'tanggal_pinjaman' => '2024-04-12', 'tanggal_kembali' => '2024-04-22'],
-        ];
+        $today = Carbon::today();
+        $peminjamHariIni = Peminjaman::whereDate('tanggal_pinjam', $today)
+                                        ->distinct('id_siswa')
+                                        ->count('id_siswa');
+        
+        $bukuDipinjamHariIni = Peminjaman::whereDate('tanggal_pinjam', $today)
+                                        ->count();
 
-        return view('admin-page.content-dashboard-admin', ['peminjaman' => $peminjaman]);
+        $bulanIni = Carbon::now()->month;
+        $tahunIni = Carbon::now()->year;
+        $peminjamBulanIni = Peminjaman::whereMonth('tanggal_pinjam', $bulanIni)
+                                              ->whereYear('tanggal_pinjam', $tahunIni)
+                                              ->distinct('id_siswa')
+                                              ->count('id_siswa');
+        $bukuDipinjamBulanIni = Peminjaman::whereMonth('tanggal_pinjam', $bulanIni)
+                                              ->whereYear('tanggal_pinjam', $tahunIni)
+                                              ->count();
+        
+        $peminjamTahunIni = Peminjaman::whereYear('tanggal_pinjam', $tahunIni)
+                                        ->distinct('id_siswa')
+                                        ->count('id_siswa');
+        $bukuDipinjamTahunIni = Peminjaman::whereYear('tanggal_pinjam', $tahunIni)
+                                        ->count();
+
+        $chartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $chartDataBulan = [];
+        
+        return view('admin-page.content-dashboard-admin', compact(
+            'peminjamHariIni',
+            'bukuDipinjamHariIni',
+            'peminjamBulanIni',
+            'bukuDipinjamBulanIni',
+            'peminjamTahunIni',
+            'bukuDipinjamTahunIni',
+            'chartLabels',
+            'chartDataBulan'
+        ));
     }
 
     public function buku()
     {
-        return view('admin-page.content-buku');
+        $books = Buku::orderBy('tahun_terbit', 'desc')->get();
+        $totalBuku = Buku::count();
+        $bukuTersedia = Buku::where('status', 'tersedia')->count();
+        $bukuDipinjam = Buku::where('status', 'dipinjam')->count();
+        
+        return view('admin-page.content-buku-admin', compact('books', 'totalBuku', 'bukuTersedia', 'bukuDipinjam'));
+    }
+
+    public function storeBuku(Request $request)
+    {
+        $validated = $request->validate([
+            'kode_buku' => 'nullable|string|max:225',
+            'judul_buku' => 'required|string|max:225',
+            'pengarang' => 'required|string|max:225',
+            'penerbit' => 'required|string|max:45',
+            'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'kategori' => 'required|string|max:225',
+            'stok' => 'required|integer|min:1',
+            'status' => 'required|in:tersedia,dipinjam',
+        ]);
+
+        Buku::create($validated);
+        return response()->json(['message' => 'Buku berhasil ditambahkan!'], 201);
+    }
+
+    public function deleteBuku($id)
+    {
+        $buku = Buku::find($id);
+        if (!$buku) {
+            return response()->json(['message' => 'Buku tidak ditemukan.'], 404);
+        }
+
+        $buku->delete();
+        return response()->json(['message' => 'Buku berhasil dihapus.'], 200);
+    }
+
+    public function getBuku($id)
+    {
+        $buku = Buku::find($id);
+        if (!$buku) {
+            return response()->json(['message' => 'Buku tidak ditemukan.'], 404);
+        }
+
+        return response()->json($buku, 200);
+    }
+    
+    public function updateBuku(Request $request, $id)
+    {
+        $buku = Buku::find($id);
+        if (!$buku) {
+            return response()->json(['message' => 'Buku tidak ditemukan.'], 404);
+        }
+        
+        $validated = $request->validate([
+            'kode_buku' => 'nullable|string|max:225',
+            'judul_buku' => 'required|string|max:225',
+            'pengarang' => 'required|string|max:225',
+            'penerbit' => 'required|string|max:45',
+            'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'kategori' => 'required|string|max:225',
+            'stok' => 'required|integer|min:1',
+            'status' => 'required|in:tersedia,dipinjam',
+        ]);
+        
+        $buku->update($validated);
+        return response()->json(['message' => 'Buku berhasil diupdate!'], 200);
     }
 
     public function siswa()
     {
-        return view('admin-page.content-siswa');
+        $students = Siswa::with('user')->orderBy('nama_siswa', 'asc')->get();
+        $totalSiswa = Siswa::count();
+        $siswaAktif = Peminjaman::whereNull('tanggal_kembali')->distinct('id_siswa')->count('id_siswa');
+        $totalKelas = Siswa::distinct('kelas')->count('kelas');
+        
+        return view('admin-page.content-siswa-admin', compact('students', 'totalSiswa', 'siswaAktif', 'totalKelas'));
+    }
+    
+    public function storeSiswa(Request $request)
+    {
+        $validated = $request->validate([
+            'nis' => 'required|integer|unique:siswa,nis',
+            'nama_siswa' => 'required|string|max:225',
+            'kelas' => 'required|string|max:45',
+            'alamat' => 'required|string|max:225',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:6',
+        ]);
+        
+        $user = User::create([
+            'username' => $validated['username'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'siswa'
+        ]);
+        
+        Siswa::create([
+            'nis' => $validated['nis'],
+            'nama_siswa' => $validated['nama_siswa'],
+            'kelas' => $validated['kelas'],
+            'alamat' => $validated['alamat'],
+            'id_user' => $user->id_user
+        ]);
+        
+        return response()->json(['message' => 'Siswa berhasil ditambahkan!'], 201);
+    }
+    
+    public function getSiswa($id)
+    {
+        $siswa = Siswa::with('user')->find($id);
+        if (!$siswa) {
+            return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
+        }
+        
+        return response()->json($siswa, 200);
+    }
+    
+    public function updateSiswa(Request $request, $id)
+    {
+        $siswa = Siswa::find($id);
+        if (!$siswa) {
+            return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
+        }
+        
+        $validated = $request->validate([
+            'nis' => 'required|integer|unique:siswa,nis,' . $id . ',id_siswa',
+            'nama_siswa' => 'required|string|max:225',
+            'kelas' => 'required|string|max:45',
+            'alamat' => 'required|string|max:225',
+            'password' => 'nullable|string|min:6',
+        ]);
+        
+        $siswa->update([
+            'nis' => $validated['nis'],
+            'nama_siswa' => $validated['nama_siswa'],
+            'kelas' => $validated['kelas'],
+            'alamat' => $validated['alamat'],
+        ]);
+        
+        if (!empty($validated['password'])) {
+            $siswa->user->update([
+                'password' => Hash::make($validated['password'])
+            ]);
+        }
+        
+        return response()->json(['message' => 'Siswa berhasil diupdate!'], 200);
+    }
+    
+    public function deleteSiswa($id)
+    {
+        $siswa = Siswa::find($id);
+        if (!$siswa) {
+            return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
+        }
+        
+        $siswa->user->delete();
+        
+        return response()->json(['message' => 'Siswa berhasil dihapus!'], 200);
     }
 
     public function transaksi()
     {
-        return view('admin-page.content-transaksi');
+        $peminjaman = Peminjaman::with(['siswa', 'buku'])
+                                ->whereNull('tanggal_kembali')
+                                ->orderBy('tanggal_pinjam', 'desc')
+                                ->get();
+        
+        $totalDipinjam = Peminjaman::whereNull('tanggal_kembali')->count();
+        $pengembalianHariIni = Pengembalian::whereDate('tanggal_pengembalian', Carbon::today())->count();
+        
+        $totalTerlambat = Peminjaman::whereNull('tanggal_kembali')
+                                    ->where('tanggal_pinjam', '<', Carbon::now()->subDays(7))
+                                    ->count();
+        
+        return view('admin-page.content-transaksi-admin', compact('peminjaman', 'totalDipinjam', 'pengembalianHariIni', 'totalTerlambat'));
+    }
+    
+    public function prosesPengembalian(Request $request)
+    {
+        $validated = $request->validate([
+            'id_peminjaman' => 'required|string|exists:peminjaman,id_peminjaman',
+            'tanggal_pengembalian' => 'required|date',
+            'denda' => 'nullable|numeric|min:0',
+            'catatan' => 'nullable|string',
+        ]);
+        
+        $peminjaman = Peminjaman::find($validated['id_peminjaman']);
+        
+        if (!$peminjaman) {
+            return response()->json(['message' => 'Peminjaman tidak ditemukan'], 404);
+        }
+        
+        if ($peminjaman->tanggal_kembali) {
+            return response()->json(['message' => 'Buku sudah dikembalikan'], 400);
+        }
+        
+        $peminjaman->update([
+            'tanggal_kembali' => $validated['tanggal_pengembalian'],
+            'status' => 'dikembalikan'
+        ]);
+        
+        $idPengembalian = 'PGB-' . time() . '-' . rand(1000, 9999);
+        Pengembalian::create([
+            'id_pengembalian' => $idPengembalian,
+            'id_peminjaman' => $validated['id_peminjaman'],
+            'tanggal_pengembalian' => $validated['tanggal_pengembalian'],
+            'denda' => $validated['denda'] ?? '0',
+        ]);
+        
+        $peminjaman->buku->update([
+            'status' => 'tersedia'
+        ]);
+        
+        return response()->json(['message' => 'Pengembalian berhasil diproses!'], 200);
     }
 
     public function aktivitas()
