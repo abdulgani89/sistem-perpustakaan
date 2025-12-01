@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Session;
 use App\Models\Peminjaman;
 use App\Models\Buku;
+use App\Models\Siswa;
+use App\Models\Pengembalian;
 use Carbon\Carbon;
 
 class KepalaController extends Controller
@@ -68,5 +70,85 @@ class KepalaController extends Controller
             'bukuDipinjam',
             'bukuHilang'
         ));
+    }
+
+    public function exportData()
+    {
+        $tahunIni = Carbon::now()->year;
+        
+        $peminjaman = Peminjaman::with(['siswa', 'buku'])
+                                ->whereYear('tanggal_pinjam', $tahunIni)
+                                ->get()
+                                ->map(function($item) {
+                                    return [
+                                        'id_peminjaman' => $item->id_peminjaman,
+                                        'siswa' => $item->siswa->nama_siswa ?? '-',
+                                        'buku' => $item->buku->judul_buku ?? '-',
+                                        'tanggal_pinjam' => $item->tanggal_pinjam,
+                                        'tanggal_kembali' => $item->tanggal_kembali,
+                                        'status' => $item->status,
+                                    ];
+                                });
+        
+        $pengembalian = Pengembalian::with(['peminjaman.siswa', 'peminjaman.buku'])
+                                    ->whereYear('tanggal_pengembalian', $tahunIni)
+                                    ->get()
+                                    ->map(function($item) {
+                                        return [
+                                            'id_pengembalian' => $item->id_pengembalian,
+                                            'siswa' => $item->peminjaman->siswa->nama_siswa ?? '-',
+                                            'buku' => $item->peminjaman->buku->judul_buku ?? '-',
+                                            'tanggal_pengembalian' => $item->tanggal_pengembalian,
+                                            'denda' => $item->denda,
+                                        ];
+                                    });
+        
+        $buku = Buku::all()->map(function($item) {
+            return [
+                'id_buku' => $item->id_buku,
+                'judul_buku' => $item->judul_buku,
+                'pengarang' => $item->pengarang,
+                'penerbit' => $item->penerbit,
+                'tahun_terbit' => $item->tahun_terbit,
+                'kategori' => $item->kategori,
+                'stok' => $item->stok,
+                'hilang' => $item->hilang,
+                'status' => $item->status,
+            ];
+        });
+        
+        $siswa = Siswa::all()->map(function($item) {
+            return [
+                'id_siswa' => $item->id_siswa,
+                'nama_siswa' => $item->nama_siswa,
+                'kelas' => $item->kelas,
+                'alamat' => $item->alamat,
+                'no_telp' => $item->no_telp,
+            ];
+        });
+        
+        $data = [
+            'exported_at' => Carbon::now()->toDateTimeString(),
+            'tahun' => $tahunIni,
+            'summary' => [
+                'total_peminjaman' => $peminjaman->count(),
+                'total_pengembalian' => $pengembalian->count(),
+                'total_buku' => $buku->count(),
+                'total_siswa' => $siswa->count(),
+                'buku_hilang' => Buku::sum('hilang'),
+                'buku_dipinjam' => Peminjaman::where('status', 'dipinjam')->count(),
+            ],
+            'peminjaman' => $peminjaman,
+            'pengembalian' => $pengembalian,
+            'buku' => $buku,
+            'siswa' => $siswa,
+        ];
+        
+        $filename = 'data-perpustakaan-' . $tahunIni . '-' . date('Ymd-His') . '.json';
+        
+        return response()->json($data, 200, [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 }
