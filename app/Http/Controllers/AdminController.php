@@ -225,15 +225,15 @@ class AdminController extends Controller
     public function transaksi()
     {
         $peminjaman = Peminjaman::with(['siswa', 'buku'])
-                                ->whereNull('tanggal_kembali')
+                                ->where('status', 'dipinjam')
                                 ->orderBy('tanggal_pinjam', 'desc')
                                 ->get();
         
-        $totalDipinjam = Peminjaman::whereNull('tanggal_kembali')->count();
+        $totalDipinjam = Peminjaman::where('status', 'dipinjam')->count();
         $pengembalianHariIni = Pengembalian::whereDate('tanggal_pengembalian', Carbon::today())->count();
         
-        $totalTerlambat = Peminjaman::whereNull('tanggal_kembali')
-                                    ->where('tanggal_pinjam', '<', Carbon::now()->subDays(7))
+        $totalTerlambat = Peminjaman::where('status', 'dipinjam')
+                                    ->where('tanggal_kembali', '<', Carbon::now())
                                     ->count();
         
         return view('admin-page.content-transaksi-admin', compact('peminjaman', 'totalDipinjam', 'pengembalianHariIni', 'totalTerlambat'));
@@ -254,12 +254,11 @@ class AdminController extends Controller
             return response()->json(['message' => 'Peminjaman tidak ditemukan'], 404);
         }
         
-        if ($peminjaman->tanggal_kembali) {
+        if ($peminjaman->status === 'dikembalikan') {
             return response()->json(['message' => 'Buku sudah dikembalikan'], 400);
         }
         
         $peminjaman->update([
-            'tanggal_kembali' => $validated['tanggal_pengembalian'],
             'status' => 'dikembalikan'
         ]);
         
@@ -280,6 +279,14 @@ class AdminController extends Controller
 
     public function aktivitas()
     {
-        return view('admin-page.content-aktivitas');
+        $pengembalian = Pengembalian::with(['peminjaman.siswa', 'peminjaman.buku'])
+                                    ->orderBy('tanggal_pengembalian', 'desc')
+                                    ->get();
+        
+        $totalPengembalian = Pengembalian::count();
+        $pengembalianHariIni = Pengembalian::whereDate('tanggal_pengembalian', Carbon::today())->count();
+        $totalDenda = Pengembalian::sum('denda');
+        
+        return view('admin-page.content-aktivitas-admin', compact('pengembalian', 'totalPengembalian', 'pengembalianHariIni', 'totalDenda'));
     }
 }

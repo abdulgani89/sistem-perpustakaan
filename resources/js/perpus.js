@@ -293,6 +293,7 @@ function setupDynamicEventListeners() {
     }
     
     setupTransaksiEventListeners();
+    setupAktivitasEventListeners();
 }
 
 function handleSubmitTambahBuku(e) {
@@ -345,7 +346,71 @@ function handleSubmitTambahBuku(e) {
     })
     .finally(() => {
         btnSubmit.disabled = false;
-        btnSubmit.textContent = 'Simpan';
+        btnSubmit.textContent = 'Proses Pengembalian';
+    });
+}
+
+function setupAktivitasEventListeners() {
+    const btnFilterHariIni = document.getElementById('btnFilterHariIni');
+    const btnFilterSemua = document.getElementById('btnFilterSemua');
+    const btnFilterDenda = document.getElementById('btnFilterDenda');
+    
+    if (btnFilterHariIni) {
+        btnFilterHariIni.addEventListener('click', () => {
+            filterPengembalian('today');
+            btnFilterHariIni.classList.remove('bg-gray-200', 'text-gray-700');
+            btnFilterHariIni.classList.add('bg-[#0077B6]', 'text-white');
+            btnFilterSemua.classList.remove('bg-[#0077B6]', 'text-white');
+            btnFilterSemua.classList.add('bg-gray-200', 'text-gray-700');
+            btnFilterDenda.classList.remove('bg-[#0077B6]', 'text-white');
+            btnFilterDenda.classList.add('bg-gray-200', 'text-gray-700');
+        });
+    }
+    
+    if (btnFilterSemua) {
+        btnFilterSemua.addEventListener('click', () => {
+            filterPengembalian('all');
+            btnFilterSemua.classList.remove('bg-gray-200', 'text-gray-700');
+            btnFilterSemua.classList.add('bg-[#0077B6]', 'text-white');
+            btnFilterHariIni.classList.remove('bg-[#0077B6]', 'text-white');
+            btnFilterHariIni.classList.add('bg-gray-200', 'text-gray-700');
+            btnFilterDenda.classList.remove('bg-[#0077B6]', 'text-white');
+            btnFilterDenda.classList.add('bg-gray-200', 'text-gray-700');
+        });
+    }
+    
+    if (btnFilterDenda) {
+        btnFilterDenda.addEventListener('click', () => {
+            filterPengembalian('denda');
+            btnFilterDenda.classList.remove('bg-gray-200', 'text-gray-700');
+            btnFilterDenda.classList.add('bg-[#0077B6]', 'text-white');
+            btnFilterHariIni.classList.remove('bg-[#0077B6]', 'text-white');
+            btnFilterHariIni.classList.add('bg-gray-200', 'text-gray-700');
+            btnFilterSemua.classList.remove('bg-[#0077B6]', 'text-white');
+            btnFilterSemua.classList.add('bg-gray-200', 'text-gray-700');
+        });
+    }
+}
+
+function filterPengembalian(filter) {
+    const rows = document.querySelectorAll('#tablePengembalianBody tr');
+    
+    rows.forEach(row => {
+        const filterAttr = row.getAttribute('data-filter');
+        const dendaAttr = row.getAttribute('data-denda');
+        
+        if (!filterAttr) {
+            row.style.display = '';
+            return;
+        }
+        
+        if (filter === 'all') {
+            row.style.display = '';
+        } else if (filter === 'today') {
+            row.style.display = filterAttr === 'today' ? '' : 'none';
+        } else if (filter === 'denda') {
+            row.style.display = dendaAttr === 'yes' ? '' : 'none';
+        }
     });
 }
 

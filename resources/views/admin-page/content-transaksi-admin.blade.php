@@ -35,7 +35,7 @@
                     <tbody id="tablePeminjamanBody">
                         @forelse($peminjaman as $pinjam)
                         @php
-                            $tanggalKembali = \Carbon\Carbon::parse($pinjam->tanggal_pinjam)->addDays(7);
+                            $tanggalKembali = \Carbon\Carbon::parse($pinjam->tanggal_kembali);
                             $today = \Carbon\Carbon::now();
                             $terlambat = $today->gt($tanggalKembali);
                             $selisihHari = $terlambat ? $today->diffInDays($tanggalKembali) : 0;
@@ -171,14 +171,6 @@
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#03045E] focus:border-transparent">
                     <p class="text-xs text-gray-500 mt-1">Denda: Rp 1.000/hari. Keterlambatan: <span id="info_hari_terlambat"></span> hari</p>
                     <span class="text-red-500 text-sm" id="error_denda"></span>
-                </div>
-
-                <!-- Catatan -->
-                <div>
-                    <label for="catatan" class="block text-sm font-bold text-gray-700 mb-2">Catatan (Opsional)</label>
-                    <textarea id="catatan" name="catatan" rows="3"
-                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#03045E] focus:border-transparent"
-                              placeholder="Kondisi buku, catatan tambahan, dll"></textarea>
                 </div>
             </div>
 

@@ -22,7 +22,6 @@ class Siswa extends Model
         'id_user'
     ];
 
-    // Relasi ke Users
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
