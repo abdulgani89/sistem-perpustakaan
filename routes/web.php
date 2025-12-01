@@ -70,6 +70,7 @@ Route::middleware(['checkSiswaAuth'])->group(function () {
 
 Route::middleware(['checkKepalaAuth'])->group(function () {
     Route::get('/kepala', [KepalaController::class, 'index'])->name('kepala.index');
+    Route::get('/kepala/export-data', [KepalaController::class, 'exportData'])->name('kepala.exportData');
 });
 // LOGOUT
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');

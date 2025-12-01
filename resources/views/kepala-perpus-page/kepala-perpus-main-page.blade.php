@@ -58,6 +58,9 @@
                         <span class="text-2xl font-bold text-green-600">{{ $bukuDipinjamTahunIni }}</span>
                     </div>
                 </div>
+                <button onclick="window.location.href='{{ route('kepala.exportData') }}'" class = "border-[2px] w-fit mt-25 px-2 h-10 rounded-[20px] bg-white text-[#0077B6] font-bold hover:bg-[#caf0f8]">
+                    Unduh Dataset
+                </button>
             </div>
 
             <!-- Middle Column (Card 2 & 3) -->
@@ -79,7 +82,7 @@
                 </div>
             </div>
 
-            <!-- Card 4 -->
+            <!-- Card 4  -->
             <div class="lg:col-span-3 bg-white rounded-[20px] shadow-lg p-5">
                 <h3 class="text-xl font-bold text-[#03045E] mb-4">Status Buku Real-Time</h3>
                 <div class="w-full h-[500px] flex items-center justify-center">
@@ -88,13 +91,11 @@
             </div>
 
         </div>
-
          <div class="absolute bottom-10 right-12">
             <button onclick= "window.location.href='{{ route('logout') }}'" class="flex items-center justify-center bg-[#0077B6] text-white px-4 py-2 rounded-full w-16 h-16 hover:scale-110 hover:shadow-lg transition-transform duration-300 ease-in-out">
                 <img src="{{ asset('images/siswa-page/material-symbols_logout.svg') }}" alt="Exit" class="w-8 h-8">
             </button>
-         </div>
-
+         </div> 
     </div>
 </body>
 </html>
