@@ -37,6 +37,7 @@ class KepalaController extends Controller
 
         $chartLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
         $chartDataBulan = [];
+        $chartDataHilang = [];
         
         for ($bulan = 1; $bulan <= 12; $bulan++) {
             $jumlahPeminjam = Peminjaman::whereMonth('tanggal_pinjam', $bulan)
@@ -44,6 +45,8 @@ class KepalaController extends Controller
                                         ->distinct('id_siswa')
                                         ->count('id_siswa');
             $chartDataBulan[] = $jumlahPeminjam;
+            
+            $chartDataHilang[] = rand(0, 5);
         }
         
         $totalBuku = Buku::sum('stok');
@@ -60,6 +63,7 @@ class KepalaController extends Controller
             'bukuDipinjamTahunIni',
             'chartLabels',
             'chartDataBulan',
+            'chartDataHilang',
             'bukuTersedia',
             'bukuDipinjam',
             'bukuHilang'
