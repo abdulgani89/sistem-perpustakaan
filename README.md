@@ -1,66 +1,306 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Panduan Instalasi dan Testing Sistem Perpustakaan
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Prasyarat
+Pastikan sudah terinstal di laptop/komputer Anda:
+- **PHP** >= 8.0
+- **Composer** (Dependency Manager PHP)
+- **Node.js** dan **npm** (untuk Vite)
+- **MySQL** / **MariaDB**
+- **Git**
 
-## Bwahahahahaha Project Akhir
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Langkah 1: Clone Repository
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```bash
+git clone https://github.com/abdulgani89/sistem-perpustakaan.git
+cd sistem-perpustakaan
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Atau jika sudah punya folder projeknya, buka terminal di folder tersebut.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Langkah 2: Install Dependencies
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Install PHP Dependencies
+```bash
+composer install
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Install Node.js Dependencies
+```bash
+npm install
+```
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Langkah 3: Konfigurasi Environment
 
-### Premium Partners
+### Copy file .env
+```bash
+copy .env.example .env
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### Generate Application Key
+```bash
+php artisan key:generate
+```
 
-## Contributing
+### Edit file .env
+Buka file `.env` dan sesuaikan konfigurasi database:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sistem_perpustakaan
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Code of Conduct
+**Catatan:** Sesuaikan `DB_USERNAME` dan `DB_PASSWORD` dengan kredensial MySQL di laptop Anda.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Langkah 4: Buat Database
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Buka **phpMyAdmin** atau MySQL CLI, lalu buat database baru:
 
-## License
+```sql
+CREATE DATABASE sistem_perpustakaan;
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Atau via command line:
+```bash
+mysql -u root -p -e "CREATE DATABASE sistem_perpustakaan;"
+```
+
+---
+
+## Langkah 5: Migrasi dan Seeding Database
+
+Jalankan migrasi untuk membuat semua tabel dan isi data awal:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Perintah ini akan:
+- Membuat tabel: `users`, `siswa`, `buku`, `peminjaman`, `pengembalian`, `laporan`
+- Mengisi data dummy:
+  - **Users**: Admin dan Kepala Perpustakaan
+  - **Buku**: 50 buku dengan stok dan kolom hilang
+  - **Siswa**: 30 siswa
+  - **Peminjaman**: Data peminjaman dari Januari - Desember
+
+---
+
+## Langkah 6: Compile Assets (Vite)
+
+### Development Mode (dengan hot reload)
+Buka terminal baru dan jalankan:
+```bash
+npm run dev
+```
+
+Biarkan terminal ini tetap berjalan selama development.
+
+### Production Build (opsional)
+Jika ingin build untuk production:
+```bash
+npm run build
+```
+
+---
+
+## Langkah 7: Jalankan Server Laravel
+
+Buka terminal baru (jika `npm run dev` masih berjalan di terminal lain):
+
+```bash
+php artisan serve
+```
+
+Server akan berjalan di: **http://127.0.0.1:8000**
+
+---
+
+## Langkah 8: Testing Login
+
+### 1. Login sebagai Admin
+- **URL**: http://127.0.0.1:8000/login
+- **Username**: `admin`
+- **Password**: `12345`
+
+**Fitur Admin:**
+- Dashboard admin
+- CRUD Buku
+- CRUD Siswa
+- Transaksi Peminjaman dan Pengembalian
+- Proses Buku Hilang (stok berkurang, kolom hilang bertambah)
+- Laporan dan Aktivitas
+
+---
+
+### 2. Login sebagai Kepala Perpustakaan
+- **URL**: http://127.0.0.1:8000/login/kepala
+- **Username**: `kepala`
+- **Password**: `12345`
+
+**Fitur Kepala Perpustakaan:**
+- Dashboard dengan statistik:
+  - Jumlah peminjam (hari ini, bulan ini, tahun ini)
+  - Jumlah buku dipinjam (hari ini, bulan ini, tahun ini)
+- Chart.js visualisasi:
+  - Line chart: Tren peminjam per bulan
+  - Polar area chart: Status buku (Tersedia, Dipinjam, Hilang)
+
+---
+
+### 3. Login sebagai Siswa
+- **URL**: http://127.0.0.1:8000/login/siswa
+- **Username**: `SIS001` sampai `SIS030` (sesuai NIS di database)
+- **Password**: `12345`
+
+**Fitur Siswa:**
+- Lihat profil
+- Riwayat peminjaman
+- Status pengembalian
+
+---
+
+## Struktur Database
+
+### Tabel Users
+- `id_user` (Primary Key)
+- `username` (unique)
+- `password` (hashed dengan bcrypt)
+- `role` (admin, kepala, siswa)
+
+### Tabel Buku
+- `id_buku` (Primary Key)
+- `judul_buku`
+- `pengarang`
+- `penerbit`
+- `tahun_terbit`
+- `stok` (jumlah total buku)
+- `hilang` (jumlah buku hilang)
+- `status` (tersedia, dipinjam)
+
+### Tabel Siswa
+- `nis` (Primary Key)
+- `nama_siswa`
+- `kelas`
+- `jurusan`
+- `alamat`
+- `no_telp`
+
+### Tabel Peminjaman
+- `id_peminjaman` (Primary Key)
+- `id_buku` (Foreign Key ke buku)
+- `nis` (Foreign Key ke siswa)
+- `tanggal_pinjam`
+- `tanggal_kembali` (deadline)
+- `status` (dipinjam, dikembalikan)
+
+### Tabel Pengembalian
+- `id_pengembalian` (Primary Key)
+- `id_peminjaman` (Foreign Key)
+- `tanggal_pengembalian`
+- `denda`
+
+---
+
+## Fitur Utama
+
+### 1. Manajemen Buku (Admin)
+- Tambah, Edit, Hapus buku
+- Tracking stok dan buku hilang
+- Update otomatis status buku
+
+### 2. Transaksi Pengembalian (Admin)
+- **Pengembalian Normal**: Buku kembali tersedia, stok tidak berubah
+- **Buku Hilang**: 
+  - Kolom `hilang` pada tabel buku **+1**
+  - Kolom `stok` pada tabel buku **-1**
+  - Status peminjaman diupdate ke "dikembalikan"
+  - Record pengembalian dibuat
+
+### 3. Dashboard Kepala Perpustakaan
+- Statistik real-time dari database
+- Chart.js untuk visualisasi:
+  - Tren peminjam bulanan
+  - Distribusi status buku (Polar Area Chart)
+- Responsive design dengan Tailwind CSS Grid
+
+### 4. Authentication & Authorization
+- Middleware: `checkAdminAuth`, `checkKepalaAuth`, `checkSiswaAuth`
+- Session-based authentication
+- Password hashing dengan bcrypt
+
+---
+
+## Troubleshooting
+
+### Error: "SQLSTATE[HY000] [1045] Access denied"
+**Solusi:** Periksa kredensial database di file `.env`
+
+### Error: "Vite manifest not found"
+**Solusi:** Jalankan `npm run dev` atau `npm run build`
+
+### Error: "Class 'Hash' not found"
+**Solusi:** Jalankan `composer install` dan pastikan Laravel terinstall lengkap
+
+### Port 8000 sudah digunakan
+**Solusi:** Gunakan port lain:
+```bash
+php artisan serve --port=8080
+```
+
+### Database reset ulang
+Jika ingin reset database dari awal:
+```bash
+php artisan migrate:fresh --seed
+```
+
+---
+
+## Command Penting
+
+| Command | Deskripsi |
+|---------|-----------|
+| `composer install` | Install PHP dependencies |
+| `npm install` | Install Node.js dependencies |
+| `php artisan key:generate` | Generate application key |
+| `php artisan migrate` | Jalankan migrasi database |
+| `php artisan migrate:fresh --seed` | Reset database + seeding |
+| `php artisan db:seed` | Jalankan seeder saja |
+| `php artisan serve` | Jalankan development server |
+| `npm run dev` | Jalankan Vite (hot reload) |
+| `npm run build` | Build production assets |
+
+---
+
+## Testing Fitur Buku Hilang
+
+1. Login sebagai **admin**
+2. Masuk ke menu **Transaksi**
+3. Klik tombol **Kembalikan** pada salah satu peminjaman aktif
+4. Di modal, klik tombol **Buku Hilang** (tombol merah)
+5. Konfirmasi popup
+6. Cek database tabel `buku`:
+   - Kolom `hilang` bertambah 1
+   - Kolom `stok` berkurang 1
+
+---
+
+## Kontak & Support
+
+Jika ada kendala saat instalasi atau testing, silakan hubungi:
+- **Repository**: https://github.com/abdulgani89/sistem-perpustakaan
+- **Branch**: `haidar-view`
+
+---
+
+**Happy Testing! 🚀**
