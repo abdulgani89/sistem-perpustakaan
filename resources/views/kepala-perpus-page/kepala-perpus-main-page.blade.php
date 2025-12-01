@@ -58,7 +58,7 @@
                         <span class="text-2xl font-bold text-green-600">{{ $bukuDipinjamTahunIni }}</span>
                     </div>
                 </div>
-                <button onclick="window.location.href='{{ route('kepala.exportData') }}'" class = "border-[2px] w-fit px-2 h-10 rounded-[20px] bg-white text-[#0077B6] font-bold hover:bg-[#caf0f8]">
+                <button onclick="window.location.href='{{ route('kepala.exportData') }}'" class = "border-[2px] w-fit mt-25 px-2 h-10 rounded-[20px] bg-white text-[#0077B6] font-bold hover:bg-[#caf0f8]">
                     Unduh Dataset
                 </button>
             </div>
