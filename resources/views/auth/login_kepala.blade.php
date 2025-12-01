@@ -125,23 +125,29 @@
                 </h1>
 
                 <p class="mb-4" style="font-size:28px; opacity:0.7;">
-                    Masukkan ID Kepala Perpustakaan dan Password
+                    Masukkan Username dan Password
                 </p>
+
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 <!-- FORM LOGIN KEPALA -->
                 <form action="{{ url('/login/kepala') }}" method="POST">
                     @csrf
 
-                    <!-- Input ID Kepala -->
+                    <!-- Input Username -->
                     <div class="input-card mb-4">
                         <img src="{{ asset('images/login/head-teacher.png') }}">
-                        <input type="text" name="id_kepala" placeholder="Masukkan ID Kepala">
+                        <input type="text" name="username" placeholder="Masukkan Username" required>
                     </div>
 
                     <!-- Input Password -->
                     <div class="input-card mb-5">
                         <img src="{{ asset('images/login/padlock.png') }}">
-                        <input type="password" name="password" placeholder="Masukkan Password">
+                        <input type="password" name="password" placeholder="Masukkan Password" required>
                     </div>
 
                     <button class="btn-login d-block mx-auto">Login</button>

@@ -22,6 +22,7 @@ class Buku extends Model
         'tahun_terbit',
         'kategori',
         'stok',
+        'hilang',
         'status',
         'cover'
     ];

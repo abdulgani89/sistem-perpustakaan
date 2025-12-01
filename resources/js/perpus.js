@@ -342,11 +342,66 @@ function handleSubmitTambahBuku(e) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan saat menyimpan data: ' + error.message);
+        alert('Terjadi kesalahan saat memproses pengembalian');
     })
     .finally(() => {
         btnSubmit.disabled = false;
         btnSubmit.textContent = 'Proses Pengembalian';
+    });
+}
+
+function handleSubmitBukuHilang(e) {
+    e.preventDefault();
+    
+    if (!confirm('Apakah Anda yakin buku ini hilang? Stok akan berkurang dan kolom hilang akan bertambah.')) {
+        return;
+    }
+    
+    const formData = new FormData(document.getElementById('formPengembalian'));
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    
+    const btnHilang = document.getElementById('btnSubmitBukuHilang');
+    btnHilang.disabled = true;
+    btnHilang.textContent = 'Memproses...';
+    
+    fetch('/admin/transaksi/buku-hilang', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.errors) {
+            Object.keys(data.errors).forEach(key => {
+                const errorSpan = document.getElementById(`error_${key}`);
+                if (errorSpan) {
+                    errorSpan.textContent = data.errors[key][0];
+                }
+            });
+        } else {
+            alert(data.message || 'Buku hilang berhasil diproses!');
+            
+            const modalPengembalianContent = document.getElementById('modalPengembalianContent');
+            modalPengembalianContent.style.transform = 'scale(0.95)';
+            modalPengembalianContent.style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('modalPengembalian').style.display = 'none';
+                document.getElementById('formPengembalian').reset();
+                loadContent('/admin/transaksi');
+            }, 300);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memproses buku hilang');
+    })
+    .finally(() => {
+        btnHilang.disabled = false;
+        btnHilang.textContent = 'Buku Hilang';
     });
 }
 
@@ -798,6 +853,11 @@ function setupTransaksiEventListeners() {
     if (formPengembalian) {
         formPengembalian.addEventListener('submit', handleSubmitPengembalian);
     }
+    
+    const btnSubmitBukuHilang = document.getElementById('btnSubmitBukuHilang');
+    if (btnSubmitBukuHilang) {
+        btnSubmitBukuHilang.addEventListener('click', handleSubmitBukuHilang);
+    }
 }
 
 function filterPeminjaman(filter) {
@@ -829,7 +889,6 @@ function openPengembalianModal(idPeminjaman, namaSiswa, judulBuku, terlambat, ha
         document.getElementById('info_status').innerHTML = '<span class="text-red-600 font-bold">Terlambat ' + hariTerlambat + ' hari</span>';
         document.getElementById('info_hari_terlambat').textContent = hariTerlambat;
         
-        // Hitung denda otomatis (Rp 1000/hari)
         const dendaTotal = parseInt(hariTerlambat) * 1000;
         document.getElementById('denda').value = dendaTotal;
     } else {

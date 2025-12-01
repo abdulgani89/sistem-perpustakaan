@@ -26,20 +26,42 @@ class PeminjamanSeeder extends Seeder
             return;
         }
 
-        // Generate 30 peminjaman dummy
-        for ($i = 1; $i <= 30; $i++) {
-            $tanggalPinjam = Carbon::now()->subDays(rand(1, 60));
-            $status = rand(1, 10) > 3 ? 'dikembalikan' : 'dipinjam'; // 70% dikembalikan, 30% dipinjam
-            $tanggalKembali = $status === 'dikembalikan' ? $tanggalPinjam->copy()->addDays(rand(1, 14)) : null;
+        $counter = 1;
+        $tahunIni = Carbon::now()->year;
 
-            Peminjaman::create([
-                'id_peminjaman' => 'PJM-' . date('Ymd') . '-' . str_pad($i, 4, '0', STR_PAD_LEFT),
-                'tanggal_pinjam' => $tanggalPinjam,
-                'tanggal_kembali' => $tanggalKembali,
-                'status' => $status,
-                'id_siswa' => $siswaIds[array_rand($siswaIds)],
-                'id_buku' => $bukuIds[array_rand($bukuIds)],
-            ]);
+        // Generate peminjaman dari Januari sampai Desember tahun ini
+        for ($bulan = 1; $bulan <= 12; $bulan++) {
+            // Jumlah peminjaman per bulan bervariasi (5-15 peminjaman)
+            $jumlahPeminjamanPerBulan = rand(5, 15);
+
+            for ($j = 0; $j < $jumlahPeminjamanPerBulan; $j++) {
+                // Random tanggal dalam bulan tersebut
+                $tanggalPinjam = Carbon::create($tahunIni, $bulan, rand(1, 28));
+                
+                // Jika bulan sudah lewat atau bulan ini, status bisa dikembalikan
+                // Jika bulan depan, status masih dipinjam
+                $bulanSekarang = Carbon::now()->month;
+                if ($bulan < $bulanSekarang) {
+                    $status = 'dikembalikan';
+                } elseif ($bulan == $bulanSekarang) {
+                    $status = rand(1, 10) > 3 ? 'dikembalikan' : 'dipinjam';
+                } else {
+                    $status = 'dipinjam';
+                }
+
+                $tanggalKembali = $status === 'dikembalikan' ? $tanggalPinjam->copy()->addDays(rand(1, 14)) : null;
+
+                Peminjaman::create([
+                    'id_peminjaman' => 'PJM-' . $tanggalPinjam->format('Ymd') . '-' . str_pad($counter, 4, '0', STR_PAD_LEFT),
+                    'tanggal_pinjam' => $tanggalPinjam,
+                    'tanggal_kembali' => $tanggalKembali,
+                    'status' => $status,
+                    'id_siswa' => $siswaIds[array_rand($siswaIds)],
+                    'id_buku' => $bukuIds[array_rand($bukuIds)],
+                ]);
+
+                $counter++;
+            }
         }
 
         // Update status buku yang sedang dipinjam

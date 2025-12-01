@@ -133,7 +133,6 @@
     </div>
 </div>
 
-<!-- Modal Proses Pengembalian -->
 <div id="modalPengembalian" style="display: none; background-color: rgba(0, 0, 0, 0.3);" class="fixed inset-0 z-50 flex items-center justify-center transition-all duration-300">
     <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg mx-4 transform transition-all duration-300" style="transform: scale(0.95); opacity: 0;" id="modalPengembalianContent">
         <div class="bg-[#03045E] text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
@@ -180,6 +179,9 @@
                 </button>
                 <button type="submit" id="btnSubmitPengembalian" class="px-6 py-2 bg-[#03045E] hover:bg-[#023E8A] text-white font-bold rounded-lg transition duration-300">
                     Proses Pengembalian
+                </button>
+                <button type="submit" id="btnSubmitBukuHilang" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition duration-300">
+                    Buku Hilang
                 </button>
             </div>
         </form>
