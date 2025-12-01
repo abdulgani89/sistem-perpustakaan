@@ -160,8 +160,8 @@ Server akan berjalan di: **http://127.0.0.1:8000**
 
 ### 3. Login sebagai Siswa
 - **URL**: http://127.0.0.1:8000/login/siswa
-- **Username**: `SIS001` sampai `SIS030` (sesuai NIS di database)
-- **Password**: `12345`
+- **Username**: `SISWA1` sampai `SISWA5` (sesuai NIS di database) atau 
+- **Password**: `password`
 
 **Fitur Siswa:**
 - Lihat profil
