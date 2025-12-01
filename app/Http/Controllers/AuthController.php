@@ -56,11 +56,26 @@ class AuthController extends Controller
 
     public function authKepala(Request $req)
     {
-        if ($req->id_kepala == "KPL001" && $req->password == "kepala123") {
-            Session::put('role', 'kepala');
-            return redirect()->route('kepala.dashboard');
-        }
-        return back()->with('error', 'ID Kepala atau password salah');
+        $req->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('username', $req->username)
+                    ->where('role', 'kepala')
+                    ->first();
+
+        if (!$user || !Hash::check($req->password, $user->password)) {
+            return back()->with('error', 'Username atau password admin salah');
+        } 
+
+        session([
+            'id_user' => $user->id_user,
+            'username' => $user->username,
+            'role' => 'kepala',
+        ]);
+
+        return redirect()->route('kepala.index');
     }
 
     public function authSiswa(Request $req)

@@ -32,6 +32,8 @@ class BukuSeeder extends Seeder
                 'penerbit' => $faker->randomElement($penerbit),
                 'kategori' => $faker->randomElement($kategori),
                 'status' => $faker->randomElement(['tersedia', 'tersedia', 'tersedia', 'dipinjam']), // 75% tersedia
+                'stok' => rand(3, 15), // Stok antara 3-15 buku
+                'hilang' => rand(0, 2), // 0-2 buku hilang
                 'cover' => null, // Cover bisa diisi nanti
                 'created_at' => now(),
                 'updated_at' => now(),

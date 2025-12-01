@@ -277,6 +277,51 @@ class AdminController extends Controller
         return response()->json(['message' => 'Pengembalian berhasil diproses!'], 200);
     }
 
+    public function prosesBukuHilang(Request $request)
+    {
+        $validated = $request->validate([
+            'id_peminjaman' => 'required|string|exists:peminjaman,id_peminjaman',
+            'tanggal_pengembalian' => 'required|date',
+            'catatan' => 'nullable|string',
+        ]);
+        
+        $peminjaman = Peminjaman::find($validated['id_peminjaman']);
+        
+        if (!$peminjaman) {
+            return response()->json(['message' => 'Peminjaman tidak ditemukan'], 404);
+        }
+        
+        if ($peminjaman->status === 'dikembalikan') {
+            return response()->json(['message' => 'Buku sudah dikembalikan'], 400);
+        }
+        
+        $peminjaman->update([
+            'status' => 'dikembalikan'
+        ]);
+        
+        $idPengembalian = 'PGB-' . time() . '-' . rand(1000, 9999);
+        Pengembalian::create([
+            'id_pengembalian' => $idPengembalian,
+            'id_peminjaman' => $validated['id_peminjaman'],
+            'tanggal_pengembalian' => $validated['tanggal_pengembalian'],
+            'denda' => 0,
+        ]);
+        
+
+        $buku = $peminjaman->buku;
+        $buku->increment('hilang', 1); 
+        $buku->decrement('stok', 1);   
+        
+        // Update status buku
+        if ($buku->stok > $buku->hilang) {
+            $buku->update(['status' => 'tersedia']);
+        } else {
+            $buku->update(['status' => 'dipinjam']); 
+        }
+        
+        return response()->json(['message' => 'Buku hilang berhasil diproses! Stok berkurang dan kolom hilang bertambah.'], 200);
+    }
+
     public function aktivitas()
     {
         $pengembalian = Pengembalian::with(['peminjaman.siswa', 'peminjaman.buku'])
