@@ -27,13 +27,13 @@
                                 </p>
                                 <p class="text-orange-600 text-sm font-semibold">
                                     ⏰ <span>Batas:</span> 
-                                    {{ \Carbon\Carbon::parse($item->tanggal_pinjam)->addDays(7)->format('d M Y') }}
+                                    {{ \Carbon\Carbon::parse($item->tanggal_kembali)->format('d M Y') }}
                                 </p>
                             </div>
                         </div>
                         
                         @php
-                            $batasKembali = \Carbon\Carbon::parse($item->tanggal_pinjam)->addDays(7);
+                            $batasKembali = \Carbon\Carbon::parse($item->tanggal_kembali);
                             $isOverdue = $batasKembali->isPast();
                         @endphp
                         

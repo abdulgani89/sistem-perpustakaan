@@ -20,4 +20,9 @@ class Pengembalian extends Model
         'denda',
         'id_peminjaman'
     ];
+
+    public function peminjaman()
+    {
+        return $this->belongsTo(Peminjaman::class, 'id_peminjaman', 'id_peminjaman');
+    }
 }

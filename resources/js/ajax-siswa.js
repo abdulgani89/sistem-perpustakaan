@@ -189,5 +189,9 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Terjadi kesalahan saat meminjam buku.');
         });
     }
+
+    window.bukuTidakTersedia = function(judulBuku) {
+        alert('Buku "' + judulBuku + '" sedang tidak tersedia.\nAlasan buku tidak tersedia:\n• Buku sedang dipinjam oleh siswa lain\n• Stok buku habis\n• Buku dalam proses perawatan\n\nSilakan coba lagi nanti atau tanyakan status buku pada admin perpustakaan.\nTerima Kasih 🙏 ');
+    };
     
 });
