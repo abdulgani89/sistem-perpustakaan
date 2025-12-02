@@ -94,6 +94,7 @@
             <!-- Kiri: Login Card -->
             <div class="col-12 col-lg-5 left-container p-5">
                 <h1 class="login-title mb-3" style="font-size:48px;">Halaman Login</h1>
+                
                 <p class="login-subtitle mb-4">Login sebagai:</p>
 
                 <a href="{{ route('auth.siswa') }}" class="login-card">

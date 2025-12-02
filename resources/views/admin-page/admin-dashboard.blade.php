@@ -23,7 +23,7 @@
                     </svg>
 
                     <div class="text-white text-xl font-bold">
-                        PHP.Libre AdminConsole
+                        L-Cerdas Admin Console
                     </div>
                 </div>
             </div>

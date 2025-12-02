@@ -74,10 +74,10 @@ class KepalaController extends Controller
 
     public function exportData()
     {
-        $tahunIni = Carbon::now()->year;
+        $bulanIni = Carbon::now()->month;
         
         $peminjaman = Peminjaman::with(['siswa', 'buku'])
-                                ->whereYear('tanggal_pinjam', $tahunIni)
+                                ->whereMonth('tanggal_pinjam', $bulanIni)
                                 ->get()
                                 ->map(function($item) {
                                     return [
@@ -91,7 +91,7 @@ class KepalaController extends Controller
                                 });
         
         $pengembalian = Pengembalian::with(['peminjaman.siswa', 'peminjaman.buku'])
-                                    ->whereYear('tanggal_pengembalian', $tahunIni)
+                                    ->whereMonth('tanggal_pengembalian', $bulanIni)
                                     ->get()
                                     ->map(function($item) {
                                         return [
@@ -129,7 +129,7 @@ class KepalaController extends Controller
         
         $data = [
             'exported_at' => Carbon::now()->toDateTimeString(),
-            'tahun' => $tahunIni,
+            'tahun' => $bulanIni,
             'summary' => [
                 'total_peminjaman' => $peminjaman->count(),
                 'total_pengembalian' => $pengembalian->count(),
@@ -144,7 +144,7 @@ class KepalaController extends Controller
             'siswa' => $siswa,
         ];
         
-        $filename = 'data-perpustakaan-' . $tahunIni . '-' . date('Ymd-His') . '.json';
+        $filename = 'data-perpustakaan-' . $bulanIni . '-' . date('Ymd-His') . '.json';
         
         return response()->json($data, 200, [
             'Content-Type' => 'application/json',

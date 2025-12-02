@@ -32,11 +32,13 @@ class AuthController extends Controller
 
     public function authAdmin(Request $req)
     {
+        // Mengecek kosong apa tidak
         $req->validate([
             'username' => 'required',
             'password' => 'required',
         ]);
-
+        
+        // Validasi data dengan database
         $user = User::where('username', $req->username)
                     ->where('role', 'admin')
                     ->first();
@@ -66,7 +68,7 @@ class AuthController extends Controller
                     ->first();
 
         if (!$user || !Hash::check($req->password, $user->password)) {
-            return back()->with('error', 'Username atau password admin salah');
+            return back()->with('error', 'Username atau password Kepala Perpustakaan salah');
         } 
 
         session([

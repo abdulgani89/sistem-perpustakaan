@@ -120,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     y: {
                         beginAtZero: true,
+                        maxTicksLimit: 50,
                         ticks: {
                             stepSize: 1,
                             font: {
