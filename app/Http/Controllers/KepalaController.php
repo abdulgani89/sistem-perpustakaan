@@ -48,7 +48,15 @@ class KepalaController extends Controller
                                         ->count('id_siswa');
             $chartDataBulan[] = $jumlahPeminjam;
             
-            $chartDataHilang[] = rand(0, 5);
+
+            $bukuHilangBulan = Pengembalian::join('peminjaman', 'pengembalian.id_peminjaman', '=', 'peminjaman.id_peminjaman')
+                                          ->join('buku', 'peminjaman.id_buku', '=', 'buku.id_buku')
+                                          ->whereMonth('pengembalian.created_at', $bulan)
+                                          ->whereYear('pengembalian.created_at', $tahunIni)
+                                          ->whereRaw('(SELECT hilang FROM buku WHERE buku.id_buku = peminjaman.id_buku) > 0')
+                                          ->count();
+            
+            $chartDataHilang[] = $bukuHilangBulan;
         }
         
         $totalBuku = Buku::sum('stok');

@@ -66,7 +66,7 @@
             <!-- Middle Column (Card 2 & 3) -->
             <div class="lg:col-span-6 space-y-5">
                 <!-- Card 2  -->
-                <div class="bg-white rounded-[20px] shadow-lg p-5">
+                <div class="bg-white rounded-[20px] shadow-lg p-5 duration-300">
                     <h3 class="text-xl font-bold text-[#03045E] mb-4">Statistik Peminjam per Bulan ({{ date('Y') }})</h3>
                     <div class="w-full h-[220px]">
                         <canvas id="chartPeminjamPerBulan"></canvas>
