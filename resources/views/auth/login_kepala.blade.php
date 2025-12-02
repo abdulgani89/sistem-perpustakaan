@@ -9,41 +9,44 @@
 
     <style>
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: #CAF0F8;
             min-height: 100vh;
+        }
+
+        /* Container kiri */
+        .left-container {
+            z-index: 2;
             position: relative;
-            overflow: hidden;
+            padding: 5rem 2rem;
         }
 
-        /* Background kanan mengikuti style halaman login utama */
-        .bg-desktop {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 55%;
-            height: 100vh;
-            object-fit: cover;
+        h1 {
+            color: #00B4D8;
+            font-weight: bold;
+            font-size: 48px;
+            margin-bottom: 1rem;
         }
 
-        .bg-overlay {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 55%;
-            height: 100vh;
-            background: #42A5F5;
-            opacity: 0.32;
+        p {
+            font-size: 28px;
+            opacity: 0.7;
+            margin-bottom: 2rem;
         }
 
-        /* Kotak input mengikuti style input-card */
+        /* Input Card */
         .input-card {
             background: #ffffff;
             padding: 20px 28px;
             border-radius: 12px;
-            transition: 0.25s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             display: flex;
             align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: 0.25s;
+            margin-bottom: 1.5rem;
         }
 
         .input-card:hover {
@@ -55,13 +58,13 @@
             width: 58px;
             height: 58px;
             opacity: 0.6;
-            margin-right: 18px;
         }
 
         .input-card input {
+            border: none;
+            box-shadow: none;
+            width: 100%;
             font-size: 26px;
-            border: none !important;
-            box-shadow: none !important;
         }
 
         /* Tombol login */
@@ -71,11 +74,10 @@
             height: 80px;
             font-size: 32px;
             font-weight: 700;
-            color: white;
+            color: #fff;
             border: none;
             width: 260px;
             transition: 0.25s;
-            margin-top: -10px;
         }
 
         .btn-login:hover {
@@ -83,12 +85,32 @@
             transform: translateY(-3px);
         }
 
-        @media (max-width: 768px) {
-            .bg-desktop,
-            .bg-overlay {
-                display: none;
-            }
+        /* Gambar kanan full */
+        .image-side {
+            position: relative;
+        }
 
+        .image-side img {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+            border-radius: 0;
+        }
+
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+            background: #42A5F5;
+            opacity: 0.32;
+        }
+
+        @media (max-width: 992px) {
             .input-card {
                 padding: 18px;
             }
@@ -107,26 +129,25 @@
                 width: 220px;
                 font-size: 26px;
             }
+
+            .image-side img,
+            .bg-overlay {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- Background kanan -->
-    <img src="https://plus.unsplash.com/premium_photo-1677567996070-68fa4181775a?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="bg-desktop d-none d-lg-block">
-    
-    <div class="container py-5 pb-5">
-        <div class="row justify-content-start ">
-            <div class="col-12 col-lg-5  ">
+    <div class="container-fluid">
+        <div class="row">
 
-                <h1 class="fw-bold mb-3" style="color:#00B4D8; font-size:48px;">
-                    Login Kepala Perpustakaan
-                </h1>
-
-                <p class="mb-4" style="font-size:28px; opacity:0.7;">
-                    Masukkan Username dan Password
-                </p>
+            <!-- Kiri: Form Login -->
+            <div class="col-12 col-lg-5 left-container">
+                <h1>Login Kepala Perpustakaan</h1>
+                <p>Masukkan Username dan Password</p>
 
                 @if(session('error'))
                     <div class="alert alert-danger">
@@ -134,27 +155,31 @@
                     </div>
                 @endif
 
-                <!-- FORM LOGIN KEPALA -->
+                <!-- FORM LOGIN -->
                 <form action="{{ url('/login/kepala') }}" method="POST">
                     @csrf
 
                     <!-- Input Username -->
-                    <div class="input-card mb-4">
-                        <img src="{{ asset('images/login/head-teacher.png') }}">
+                    <div class="input-card">
+                        <img src="{{ asset('images/login/head-teacher.png') }}" alt="User">
                         <input type="text" name="username" placeholder="Masukkan Username" required>
                     </div>
 
                     <!-- Input Password -->
-                    <div class="input-card mb-5">
-                        <img src="{{ asset('images/login/padlock.png') }}">
+                    <div class="input-card">
+                        <img src="{{ asset('images/login/padlock.png') }}" alt="Password">
                         <input type="password" name="password" placeholder="Masukkan Password" required>
                     </div>
 
-                    <button class="btn-login d-block mx-auto">Login</button>
-
+                    <button type="submit" class="btn-login d-block mx-auto">Login</button>
                 </form>
-
             </div>
+
+            <!-- Kanan: Gambar Full -->
+            <div class="col-12 col-lg-7 image-side d-none d-lg-block">
+                <img src="https://plus.unsplash.com/premium_photo-1677567996070-68fa4181775a?q=80&w=2072&auto=format&fit=crop" alt="Background">
+            </div>
+
         </div>
     </div>
 

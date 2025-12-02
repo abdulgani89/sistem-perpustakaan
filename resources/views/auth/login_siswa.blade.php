@@ -176,7 +176,7 @@
             <!-- Kanan: Gambar Full + Overlay -->
             <div class="col-12 col-lg-7 image-side d-none d-lg-block">
                 <img src="https://plus.unsplash.com/premium_photo-1677567996070-68fa4181775a?q=80&w=2072&auto=format&fit=crop" alt="Background">
-                <div class="bg-overlay"></div>
+                
             </div>
         </div>
     </div>
