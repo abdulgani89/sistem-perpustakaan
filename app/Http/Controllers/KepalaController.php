@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Peminjaman;
 use App\Models\Buku;
@@ -80,12 +81,14 @@ class KepalaController extends Controller
         ));
     }
 
-    public function exportData()
+    public function exportData(Request $request)
     {
-        $bulanIni = Carbon::now()->month;
+        $bulanIni = $request->input('bulan', Carbon::now()->month);
+        $tahunIni = Carbon::now()->year;
         
         $peminjaman = Peminjaman::with(['siswa', 'buku'])
                                 ->whereMonth('tanggal_pinjam', $bulanIni)
+                                ->whereYear('tanggal_pinjam', $tahunIni)
                                 ->get()
                                 ->map(function($item) {
                                     return [
@@ -100,6 +103,7 @@ class KepalaController extends Controller
         
         $pengembalian = Pengembalian::with(['peminjaman.siswa', 'peminjaman.buku'])
                                     ->whereMonth('tanggal_pengembalian', $bulanIni)
+                                    ->whereYear('tanggal_pengembalian', $tahunIni)
                                     ->get()
                                     ->map(function($item) {
                                         return [
@@ -135,9 +139,11 @@ class KepalaController extends Controller
             ];
         });
         
+        $namaBulan = Carbon::create()->month($bulanIni)->locale('id')->translatedFormat('F Y');
+        
         $data = [
             'exported_at' => Carbon::now()->toDateTimeString(),
-            'tahun' => $bulanIni,
+            'bulan' => $namaBulan,
             'summary' => [
                 'total_peminjaman' => $peminjaman->count(),
                 'total_pengembalian' => $pengembalian->count(),
@@ -152,7 +158,7 @@ class KepalaController extends Controller
             'siswa' => $siswa,
         ];
         
-        $filename = 'data-perpustakaan-' . $bulanIni . '-' . date('Ymd-His') . '.json';
+        $filename = 'laporan-perpustakaan-' . Carbon::create()->month($bulanIni)->format('F-Y') . '.json';
         
         return response()->json($data, 200, [
             'Content-Type' => 'application/json',
