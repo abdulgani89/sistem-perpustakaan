@@ -1,4 +1,4 @@
-// Tunggu sampai DOM dan Chart.js ready
+
 document.addEventListener('DOMContentLoaded', function() {
     // Ambil data dari data attributes di body
     const body = document.body;
@@ -140,23 +140,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx3 = document.getElementById('chartStatusBuku');
     if (ctx3) {
         new Chart(ctx3.getContext('2d'), {
-            type: 'polarArea',
+            type: 'doughnut',
             data: {
                 labels: ['Buku Tersedia', 'Buku Dipinjam', 'Buku Hilang'],
                 datasets: [{
                     label: 'Jumlah Buku',
                     data: [bukuTersedia, bukuDipinjam, bukuHilang],
                     backgroundColor: [
-                        'rgba(34, 197, 94, 0.7)',
-                        'rgba(59, 130, 246, 0.7)',
-                        'rgba(220, 38, 38, 0.7)'
+                        'rgba(34, 197, 94, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(220, 38, 38, 0.8)'
                     ],
                     borderColor: [
                         'rgba(34, 197, 94, 1)',
                         'rgba(59, 130, 246, 1)',
                         'rgba(220, 38, 38, 1)'
                     ],
-                    borderWidth: 2
+                    borderWidth: 3
                 }]
             },
             options: {
@@ -168,29 +168,43 @@ document.addEventListener('DOMContentLoaded', function() {
                         position: 'bottom',
                         labels: {
                             font: {
-                                size: 12,
+                                size: 14,
                                 weight: 'bold'
                             },
-                            padding: 15
+                            padding: 20,
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                return data.labels.map((label, i) => {
+                                    const value = data.datasets[0].data[i];
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return {
+                                        text: `${label}: ${value} (${percentage}%)`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        hidden: false,
+                                        index: i
+                                    };
+                                });
+                            }
                         }
                     },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return context.label + ': ' + context.parsed + ' buku';
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const value = context.parsed;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return context.label + ': ' + value + ' buku (' + percentage + '%)';
                             }
-                        }
-                    }
-                },
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            font: {
-                                size: 10
-                            }
-                        }
+                        },
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12
                     }
                 }
             }

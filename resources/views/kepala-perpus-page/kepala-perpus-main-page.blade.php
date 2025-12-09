@@ -39,11 +39,11 @@
                     <p class="font-bold text-lg text-gray-600">Bulan ini</p>
                     <div class="flex justify-between items-center p-4 bg-blue-100 rounded-lg">
                         <span class="text-gray-700 font-semibold text-sm">Jumlah Peminjam</span>
-                        <span class="text-2xl font-bold text-[#0077B6]">{{ $peminjamHariIni }}</span>
+                        <span class="text-2xl font-bold text-[#0077B6]">{{ $peminjamBulanIni }}</span>
                     </div>
                     <div class="flex justify-between items-center p-4 bg-green-100 rounded-lg">
                         <span class="text-gray-700 font-semibold text-sm">Buku Dipinjam</span>
-                        <span class="text-2xl font-bold text-green-600">{{ $bukuDipinjamHariIni }}</span>
+                        <span class="text-2xl font-bold text-green-600">{{ $bukuDipinjamBulanIni }}</span>
                     </div>
                 </div>
 

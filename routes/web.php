@@ -56,9 +56,6 @@ Route::middleware(['checkAdminAuth'])->group(function () {
 });
 
 
-Route::get('/kepala/dashboard', [KepalaController::class, 'index'])->name('kepala.dashboard');
-
-
 Route::middleware(['checkSiswaAuth'])->group(function () {
     Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
     Route::get('/siswa/daftar-buku', [SiswaController::class, 'daftarBuku'])->name('daftar-buku');
@@ -70,6 +67,7 @@ Route::middleware(['checkSiswaAuth'])->group(function () {
 
 Route::middleware(['checkKepalaAuth'])->group(function () {
     Route::get('/kepala', [KepalaController::class, 'index'])->name('kepala.index');
+    Route::get('/kepala/dashboard', [KepalaController::class, 'index'])->name('kepala.dashboard');
     Route::get('/kepala/export-data', [KepalaController::class, 'exportData'])->name('kepala.exportJSON');
 });
 // LOGOUT
