@@ -15,8 +15,8 @@
     <div class="w-full h-screen relative overflow-hidden">
         <!-- User Badge -->
          <div class = "h-[77px] w-[300px] top-4 left-4 bg-[#90E0EF] backdrop-blur-md rounded-[20px] px-4 py-2 flex items-center space-x-3 mt-5 ml-5">
-            <img src="{{ asset('images/siswa-page/iconoir_profile-circle.svg') }}" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-white">
-            <div class="w-auto px-3 h-7 justify-start text-sky-600 text-xl font-bold">
+            <img src="{{ asset('images/siswa-page/iconoir_profile-circle.svg') }}" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-white flex-shrink-0">
+            <div class="flex-1 px-3 h-7 flex items-center text-sky-600 text-xl font-bold truncate overflow-hidden">
                 {{ session('nama_siswa') ?? 'Siswa' }}
             </div>
          </div>

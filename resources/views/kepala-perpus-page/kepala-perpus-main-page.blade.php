@@ -58,9 +58,19 @@
                         <span class="text-2xl font-bold text-green-600">{{ $bukuDipinjamTahunIni }}</span>
                     </div>
                 </div>
-                <button onclick="window.location.href='{{ route('kepala.exportData') }}'" class = "border-[2px] w-fit mt-25 px-2 h-10 rounded-[20px] bg-white text-[#0077B6] font-bold hover:bg-[#caf0f8]">
-                    Unduh Dataset
-                </button>
+                <form method="GET" action="{{ route('kepala.exportJSON') }}" class="flex gap-2 mt-4">
+                    <select name="bulan" class="border-[2px] px-3 h-10 rounded-[20px] bg-white text-[#0077B6] font-bold focus:outline-none focus:ring-2 focus:ring-[#0077B6]">
+                        @foreach(range(1, 12) as $bulan)
+                            <option value="{{ $bulan }}" {{ $bulan == now()->month ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($bulan)->locale('id')->monthName }}
+                            </option>
+                        @endforeach
+                    </select>
+                    
+                    <button type="submit" class="border-[2px] px-4 h-10 rounded-[20px] bg-white text-[#0077B6] font-bold hover:bg-[#caf0f8] transition-colors">
+                        Unduh Laporan
+                    </button>
+                </form>
             </div>
 
             <!-- Middle Column (Card 2 & 3) -->
